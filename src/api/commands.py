@@ -1,4 +1,3 @@
-
 import click
 from api.models import db, User
 
@@ -20,8 +19,10 @@ def setup_commands(app):
         print("Creating test users")
         for x in range(1, int(count) + 1):
             user = User()
-            user.email = "test_user" + str(x) + "@test.com"
-            user.password = "123456"
+            user.username = "test_user" + str(x) + "@test.com"
+            user.userPassword = "123456"
+            user.userPic = "hdjshakshdjk112"
+            user.userRoleID = "1"
             user.is_active = True
             db.session.add(user)
             db.session.commit()
