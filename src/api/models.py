@@ -84,4 +84,13 @@ class Task(db.Model):
     taskSupervisor_table = db.relationship("Supervisor", backref="task")
     taskCompany = db.Column(db.String, db.ForeignKey("company.companyName"), nullable=False, unique=True)
     taskCompany_table = db.relationship("Company", backref="task")
-    
+
+class Issue(db.Model):
+    issueId = db.Column(db.Integer, primary_key=True)
+    issueName= db.Column(db.String(50), nullable=False)
+    issueDesc= db.Column(db.String, nullable=False)
+    issueProof = db.Column(db.String, nullable=False)
+    issueReview = db.Column(db.String)
+    issueStatus = db.Column(db.String, nullable=False)
+    issueAdminId = db.Column(db.Integer, db.ForeignKey("administrator.administratorId"), nullable=False)
+    issueAdministrator_table = db.relationship("Administrator", backref="issue") 
