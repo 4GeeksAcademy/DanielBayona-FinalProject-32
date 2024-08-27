@@ -1,29 +1,12 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import Logo from "../../img/Logo.png";
 
-export const Navbar = () => {
-<<<<<<< HEAD
-  return (
-    <nav className="navbar navbar-light bg-light">
-      <div className="container">
-        <Link to="/">
-          <span className="navbar-brand mb-0 h1">React Boilerplate</span>
-        </Link>
-        <div className="ml-auto">
-          <Link to="/demo">
-            <button className="btn btn-primary">
-              Check the Context in action
-            </button>
-          </Link>
-        </div>
-      </div>
-    </nav>
-  );
-=======
+export const SuperVisorNavBar = () => {
     return (
-        <nav style={{ backgroundColor: "#A5C894", height: "100vh", padding: "20px 0" }}>
+        <nav style={{ backgroundColor: "#A5C894", height: "100vh", padding: "20px 0", width: '250px' }}>
             <div style={{ textAlign: "center", marginBottom: "20px" }}>
-                <img src="" alt="Taskyist Logo" style={{ width: "100px" }} />
+                <img src={Logo} alt="Taskyist Logo" style={{ width: "100px" }} />
             </div>
             <ul className="nav flex-column" style={{ listStyle: "none", padding: "0" }}>
                 <li className="nav-item">
@@ -54,5 +37,6 @@ export const Navbar = () => {
             </ul>
         </nav>
     );
->>>>>>> develop
 };
+
+export default SuperVisorNavBar

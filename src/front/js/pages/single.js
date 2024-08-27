@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { Link, useParams } from "react-router-dom";
 import { Context } from "../store/appContext";
 
-<<<<<<< HEAD
 export const Single = (props) => {
   const { store, actions } = useContext(Context);
   const params = useParams();
@@ -22,11 +21,6 @@ export const Single = (props) => {
       </Link>
     </div>
   );
-=======
-export const Single = props => {
-	const { store, actions } = useContext(Context);
-	const params = useParams();
->>>>>>> develop
 };
 
 Single.propTypes = {
