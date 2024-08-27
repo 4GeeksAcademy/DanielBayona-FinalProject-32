@@ -3,34 +3,34 @@ import { Link } from "react-router-dom";
 
 export const Navbar = () => {
     return (
-        <nav style={{ backgroundColor: "#A9D18E", height: "100vh", padding: "20px 0" }}>
+        <nav style={{ backgroundColor: "#A5C894", height: "100vh", padding: "20px 0" }}>
             <div style={{ textAlign: "center", marginBottom: "20px" }}>
-                <img src="/path-to-logo.png" alt="Taskyist Logo" style={{ width: "100px" }} /> {Image.png}
+                <img src="" alt="Taskyist Logo" style={{ width: "100px" }} />
             </div>
             <ul className="nav flex-column" style={{ listStyle: "none", padding: "0" }}>
                 <li className="nav-item">
                     <Link className="nav-link" to="/">
-                        <FaHome /> INICIO
+                        INICIO
                     </Link>
                 </li>
                 <li className="nav-item">
                     <Link className="nav-link" to="/tasks">
-                        <FaTasks /> TAREAS
+                        TAREAS
                     </Link>
                 </li>
                 <li className="nav-item">
                     <Link className="nav-link" to="/workers">
-                        <FaUsers /> TRABAJADORES
+                        TRABAJADORES
                     </Link>
                 </li>
                 <li className="nav-item">
                     <Link className="nav-link" to="/companies">
-                        <FaBuilding /> EMPRESAS
+                        EMPRESAS
                     </Link>
                 </li>
                 <li className="nav-item">
                     <Link className="nav-link" to="/logout">
-                        <FaSignOutAlt /> CERRAR SESIÓN
+                        CERRAR SESIÓN
                     </Link>
                 </li>
             </ul>
