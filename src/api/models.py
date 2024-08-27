@@ -94,3 +94,7 @@ class Issue(db.Model):
     issueStatus = db.Column(db.String, nullable=False)
     issueAdminId = db.Column(db.Integer, db.ForeignKey("administrator.administratorId"), nullable=False)
     issueAdministrator_table = db.relationship("Administrator", backref="issue") 
+    issueWorkerId = db.Column(db.Integer, db.ForeignKey("worker.workerId"))
+    issueWorker_table = db.relationship("Worker", backref="issue") 
+    issueSupervisorId = db.Column(db.Integer, db.ForeignKey("supervisor.supervisorId"))
+    issueSupervisor_table = db.relationship("Supervisor", backref="issue") 
