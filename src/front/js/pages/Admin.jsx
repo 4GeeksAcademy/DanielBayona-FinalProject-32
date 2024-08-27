@@ -1,5 +1,5 @@
 import React  from "react";
-import Sidebar from "../component/Sidebar.jsx";
+import Sidebar from "../../js/component/Sidebar.jsx"
 
 const  Admin =  () => {
     return (

@@ -6,8 +6,8 @@ import React from "react";
 // import { Home } from "./pages/home";
 // import { Demo } from "./pages/demo";
 // import { Single } from "./pages/single";
-import injectContext from "./store/appContext";
-import Admin  from "./views/Admin.jsx"
+import injectContext from "./store/appContext.js";
+import Admin  from "./pages/Admin.jsx"
 
 // import { Navbar } from "./component/navbar";
 // import { Footer } from "./component/footer";
