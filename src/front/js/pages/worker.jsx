@@ -2,11 +2,7 @@ import React from 'react'
 import WorkerNavBar from '../component/workerNavBar'
 const  Worker =  () => {
     return (
-                 <WorkerNavBar />
-           
+        <WorkerNavBar />     
     )
 }
-
-
-
 export default Worker; 

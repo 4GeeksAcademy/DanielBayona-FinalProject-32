@@ -28,9 +28,9 @@ const Layout = () => {
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
                     <Routes>
-                        <Route element={<Home />} path="/" />
-                        <Route element={<Login />} path="/Login" />
-                        <Route element={<Admin />} path="/Admin" />
+                        {/* <Route element={<Home />} path="/" /> */}
+                        <Route element={<Login />} path="/login" />
+                        <Route element={<Admin />} path="/admin" />
                         <Route element={<Supervisor />} path="/supervisor" />
                         <Route element={<Worker />} path="/worker" />
                     </Routes>
