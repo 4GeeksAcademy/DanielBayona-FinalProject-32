@@ -1,7 +1,5 @@
-// import React from 'react';
 import React, { useState } from "react";
 import Logo from "../../img/Logo.png";
-import "../../styles/supervisorNavBar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faHouse,
@@ -9,67 +7,49 @@ import {
     faUsers,
     faBug,
 } from "@fortawesome/free-solid-svg-icons";
-import "../../styles/supervisorNavBar.css";
+import  '../../styles/admin.css'
 
  
 export const Sidebar = () => {
-    const [activeItem, setActiveItem] = useState(0);
-    const handleChangeColor = (index) => {
-        setActiveItem(index)
-  
-    }
     return ( 
         
         <>
-            <div className="sidebar d-flex flex-column justify-content-between p-4">
+            <div className="sidebar p-4">
 
-                    <div className="logo align-self-center">
+                    <div className="logo align-self-center ms-2">
                             <img  
-                                className='logo-img' 
+                                className='logo-img d-block' 
                                 src={Logo}
                                 style={{width: "150px", height: "144px"}} 
-                                alt="logo de taskyist" />
+                                alt="logo de taskyist" /> 
                     </div>
-                    <div className="menu position-relative top-100" >
-                        <ul className='align-self-start'>
-                            <li 
-                                className={` ${activeItem === 0 ? "active" : "" }`}
-                                onClick={() => handleChangeColor(0)}
-                            >
-                               <a 
-                                className={`${activeItem === 0 ? "text-white" : "text-dark"}`}
-                                href="#">
-                                        <FontAwesomeIcon icon={faHouse} className="pe-2 text-dark " />
-                                        <span className='link-name text-dark fst-italic fw-bolder '>HOME</span>
+                        <ul className='  d-flex flex-column align-items-start mt-5 p-0' style={{height:"500px"}}>
+                            <li>    
+                               <a   className="nav-link" href="#">
+                                    <FontAwesomeIcon icon={faHouse} className="pe-2" />
+                                    <span>HOME</span>
                                </a>
                             </li>
-                            <li>
-                                <a href="#">
-                                    <FontAwesomeIcon icon={faBug} className="pe-2 text-dark " />
-                                    <span className='link-name  text-dark fst-italic fw-bolder ' >BUG</span>
+                            <li className="text-dark fst-italic fw-bolder ">
+                                <a className=" nav-link text-dark" href="#">
+                                        <FontAwesomeIcon icon={faBug} className="pe-2" />
+                                        <span>BUGS</span>
                                 </a>
                             </li>
-                            <li>
-                                <a href="#">
-                                <FontAwesomeIcon icon={faUsers} className="pe-2 text-dark " />
-                                {/* <i class="fa-solid fa-users me-2 mb-2 text-dark pe-2"></i> */}
-                                    <span className='link-name text-dark fst-italic fw-bolder'>USERS</span>
+                            <li className="text-dark fst-italic fw-bolder ">
+                                <a className="text-dark  nav-link" href="#">
+                                        <FontAwesomeIcon icon={faUsers} className="pe-2" />
+                                        <span>USERS</span>
                                 </a>
                             </li>
-                        </ul>
-                    </div>
-                    <div className="out">
-                        <ul>
-                            <li>
-                                <a href="#">
-                                    <FontAwesomeIcon icon={faRightFromBracket} className="pe-2 text-dark " />
-                                    <span className='link-name text-dark' >Log out</span>  
+                            <li className="text-dark fst-italic fw-bolder mt-auto p-2 ">
+                                <a className="text-dark" href="#">
+                                        <FontAwesomeIcon icon={faRightFromBracket} className="pe-2" />
+                                        <span>LOG OUT</span>
                                 </a>
-                                      
                             </li>
-                        </ul>
-                    </div>
 
+                        </ul>
             </div>
         
         </>
