@@ -6,8 +6,6 @@ const  Admin =  () => {
             <>
                 <Sidebar />
             </>
-         
-            
     )
 }
 

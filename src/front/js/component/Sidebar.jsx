@@ -33,7 +33,7 @@ export const Sidebar = () => {
                     <div className="menu position-relative top-100" >
                         <ul className='align-self-start'>
                             <li 
-                                className={` ${activeItem === 0 ? "active" : "" }`}
+                                className={ `nav-item ${activeItem === 0 ? "active" : "" }`}
                                 onClick={() => handleChangeColor(0)}
                             >
                                <a 

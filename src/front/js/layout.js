@@ -6,6 +6,10 @@ import { BackendURL } from "./component/backendURL";
 
 import Home from "./pages/home.jsx";
 import Login from "./pages/login.jsx";
+import Admin from "./pages/Admin.jsx"
+import Supervisor from "./pages/supervisor.jsx"
+import Worker from "./pages/worker.jsx"
+
 
 import injectContext from "./store/appContext";
 
@@ -24,9 +28,11 @@ const Layout = () => {
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
                     <Routes>
-                        <Route element={<worker />} path="/" />
-                        <Route element={<Login />} path="/login" />
-
+                        <Route element={<Home />} path="/" />
+                        <Route element={<Login />} path="/Login" />
+                        <Route element={<Admin />} path="/Admin" />
+                        <Route element={<Supervisor />} path="/supervisor" />
+                        <Route element={<Worker />} path="/worker" />
                     </Routes>
                 </ScrollToTop>
             </BrowserRouter>
