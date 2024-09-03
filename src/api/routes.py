@@ -54,8 +54,8 @@ def registerUser():
     
     user = User(
         username = username,
-        userPassword = userPassword,
-        userSalt = salt
+        password = userPassword,
+        salt = salt
     )
     
     try:
@@ -81,10 +81,10 @@ def login():
     if user_db is None:
         return jsonify({"error":"incorrect credentials"}), 401
     userTable= User
-    userTable= userTable.query.filter(User.username == 'username').first()
+    userTable= userTable.query.filter(User.username == 'username')
     
-    if check_password(userTable.userPassword, user['password'], userTable.userSalt):
-            token = create_access_token(identity= userTable.userID)
+    if check_password(userTable.password, user['password'], userTable.salt):
+            token = create_access_token(identity= userTable.id)
             return jsonify({"access_token":token, "logged":True}), 200
     else: 
          return jsonify({"error":"incorrect credentials"}), 401
@@ -107,7 +107,7 @@ def valid_token():
     # Access the identity of the current user with get_jwt_identity
     current_user = get_jwt_identity()
     
-    user_exist = User.query.filter_by(username=current_user).first()
+    user_exist = User.query.filter_by(id=current_user).first()
     if user_exist is None:
         return jsonify(logged=False), 404
 
