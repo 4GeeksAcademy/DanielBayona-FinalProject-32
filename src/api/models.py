@@ -6,6 +6,7 @@ class User(db.Model):
     userId = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(16), unique=True, nullable=False)
     userPassword = db.Column(db.String(256), unique=True, nullable=False)
+    userSalt = db.Column(db.String(256), unique=True, nullable=False)
     userPic = db.Column(db.String(256), unique=True, nullable=False)
     userRoleId = db.Column(db.Integer, db.ForeignKey("role.roleId"), nullable=False)
     userRole_table = db.relationship("Role", backref="user")
