@@ -1,13 +1,17 @@
 import React from "react";
-// import { BrowserRouter, Route, Routes } from "react-router-dom";
-// import ScrollToTop from "./component/scrollToTop";
-// import { BackendURL } from "./component/backendURL";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import ScrollToTop from "./component/scrollToTop";
+import { BackendURL } from "./component/backendURL";
 
-import { Home } from "./pages/home.jsx";
-import { Single } from "./pages/single";
+
+import Home from "./pages/home.jsx";
+import Login from "./pages/login.jsx";
+import Admin from "./pages/Admin.jsx"
+import Supervisor from "./pages/supervisor.jsx"
+import Worker from "./pages/worker.jsx"
+
+
 import injectContext from "./store/appContext";
-
-import { Footer } from "./component/footer";
 
 //create your first component
 const Layout = () => {
@@ -24,7 +28,11 @@ const Layout = () => {
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
                     <Routes>
-                        <Route element={<Home />} path="/" />
+                        {/* <Route element={<Home />} path="/" /> */}
+                        <Route element={<Login />} path="/login" />
+                        <Route element={<Admin />} path="/admin" />
+                        <Route element={<Supervisor />} path="/supervisor" />
+                        <Route element={<Worker />} path="/worker" />
                     </Routes>
                 </ScrollToTop>
             </BrowserRouter>
