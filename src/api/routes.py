@@ -79,8 +79,10 @@ def login():
     if user_db is None:
         return jsonify({"error":"incorrect credentials"}), 401
     
-    access_token = create_access_token(identity=user['username'])
-    return jsonify({"access_token":access_token, "logged":True}), 200
+    if check_userPassword(User.password, user['password'], user.salt):
+                token = create_access_token(identity=['username'])
+                return jsonify({"access_token":token, "logged":True}), 200
+
 
 # PROTECTED ROUTE PROFILE / RUTA PROTEGIDA PERFIL
 # Protect a route with jwt_required, which will kick out requests
