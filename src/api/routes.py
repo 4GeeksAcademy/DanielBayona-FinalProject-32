@@ -3,11 +3,13 @@ This module takes care of starting the API Server, Loading the DB and Adding the
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
 from api.models import db, User
+from sqlalchemy import select
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
-from api.utils import set_userPassword, check_userPassword
+from api.utils import set_password, check_password
 from base64 import b64encode
+import os
 
 api = Blueprint('api', __name__)
 
@@ -48,12 +50,12 @@ def registerUser():
         if user is not None:
             return jsonify('Usuario ya existe'), 400
     salt = b64encode(os.urandom(32)).decode('utf-8')
-    userPassword = set_userPassword(userPassword, salt)
+    userPassword = set_password(userPassword, salt)
     
     user = User(
         username = username,
         userPassword = userPassword,
-        salt = salt
+        userSalt = salt
     )
     
     try:
@@ -74,14 +76,18 @@ def login():
          return({'error':'"username" must be a string'}), 400
     if not isinstance(user['password'], str) or len(user['password'].strip()) == 0:
          return({'error':'"password" must be a string'}), 400
-
-    user_db = User.query.filter_by(username=user['username'], password=user['password']).first()
+    user_db = User
+    user_db = user.query.filter_by(username = user['username']).one_or_none()
     if user_db is None:
         return jsonify({"error":"incorrect credentials"}), 401
+    userTable= User
+    userTable= userTable.query.filter(User.username == 'username').first()
     
-    if check_userPassword(User.password, user['password'], user.salt):
-                token = create_access_token(identity=['username'])
-                return jsonify({"access_token":token, "logged":True}), 200
+    if check_password(userTable.userPassword, user['password'], userTable.userSalt):
+            token = create_access_token(identity= userTable.userID)
+            return jsonify({"access_token":token, "logged":True}), 200
+    else: 
+         return jsonify({"error":"incorrect credentials"}), 401
 
 
 # PROTECTED ROUTE PROFILE / RUTA PROTEGIDA PERFIL
