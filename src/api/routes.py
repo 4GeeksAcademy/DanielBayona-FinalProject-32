@@ -69,26 +69,40 @@ def registerUser():
     
 @api.route('/login', methods=['POST'])
 def login():
-
     user = request.get_json()
 
     if not isinstance(user['username'], str) or len(user['username'].strip()) == 0:
-         return({'error':'"username" must be a string'}), 400
+        return jsonify({'error': '"username" must be a string'}), 400
     if not isinstance(user['password'], str) or len(user['password'].strip()) == 0:
-         return({'error':'"password" must be a string'}), 400
-    user_db = User
-    user_db = user.query.filter_by(username = user['username']).one_or_none()
-    if user_db is None:
-        return jsonify({"error":"incorrect credentials"}), 401
-    userTable= User
-    userTable= userTable.query.filter(User.username == 'username')
-    
-    if check_password(userTable.password, user['password'], userTable.salt):
-            token = create_access_token(identity= userTable.id)
-            return jsonify({"access_token":token, "logged":True}), 200
-    else: 
-         return jsonify({"error":"incorrect credentials"}), 401
+        return jsonify({'error': '"password" must be a string'}), 400
 
+    user_db = User()
+    user_db = user_db.query.filter_by(username=user['username']).one_or_none()
+    if user_db is None:
+        return jsonify({"error": "incorrect credentials"}), 401
+
+
+    if check_password(user_db.password, user['password'], user_db.salt):
+        token = create_access_token(identity=user_db.id)
+        return jsonify({"access_token": token, "role": user_db.role.value, "logged": True}), 200
+    else:
+        return jsonify({"error": "incorrect credentials"}), 401
+
+     
+@api.route('/user', methods=["GET"])
+@jwt_required()
+def get_info_user():
+    user = User()
+    user = user.query.get(get_jwt_identity())
+    
+    # For debuugin 
+    # print(user)
+    
+    if user is None:
+        return jsonify({'message': 'User not found'}), 404
+    
+    return jsonify(user.serialize()), 200 
+     
 
 # PROTECTED ROUTE PROFILE / RUTA PROTEGIDA PERFIL
 # Protect a route with jwt_required, which will kick out requests
