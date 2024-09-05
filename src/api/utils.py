@@ -44,4 +44,4 @@ def generate_sitemap(app):
 def set_password(password, salt):
     return generate_password_hash(f"{password},{salt}")    
 def check_password(hash_password, password, salt):
-    return check_password_hash(hash_password, f"{password}, {salt}")
+    return check_password_hash(hash_password, f"{password},{salt}")

@@ -35,7 +35,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 							token: data.token
 						})
 						localStorage.setItem("token", data.token)
-						return true
+
+
+						return data.role
 					} else {
 						return false
 					}

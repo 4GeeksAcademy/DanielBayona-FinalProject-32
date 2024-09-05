@@ -15,7 +15,7 @@ class User(db.Model):
     password = db.Column(db.String(256), unique=True, nullable=False)
     salt = db.Column(db.String(256), unique=True, nullable=False)
     pic = db.Column(db.String(256), unique=True, nullable=False)
-    role = db.Column(Enum(roleEnum), unique=True, nullable=False)
+    role = db.Column(Enum(roleEnum), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
 
     def __repr__(self):
@@ -85,7 +85,7 @@ class Task(db.Model):
     worker_table = db.relationship("Worker", backref="task")
     supervisorId = db.Column(db.Integer, db.ForeignKey("supervisor.id"), nullable=False)
     supervisor_table = db.relationship("Supervisor", backref="task")
-    company = db.Column(db.String, db.ForeignKey("company.name"), nullable=False, unique=True)
+    company = db.Column(db.Integer, db.ForeignKey("company.id"), nullable=False, unique=True)
     company_table = db.relationship("Company", backref="task")
 
 class Issue(db.Model):
