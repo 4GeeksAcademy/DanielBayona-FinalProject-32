@@ -4,7 +4,7 @@ import ScrollToTop from "./component/scrollToTop";
 import { BackendURL } from "./component/backendURL";
 
 
-import Home from "./pages/home.jsx";
+
 import Login from "./pages/login.jsx";
 import Admin from "./pages/Admin.jsx"
 import Supervisor from "./pages/supervisor.jsx"
@@ -28,11 +28,11 @@ const Layout = () => {
             <BrowserRouter basename={basename}>
                 <ScrollToTop>
                     <Routes>
-                        {/* <Route element={<Home />} path="/" /> */}
-                        <Route element={<Login />} path="/login" />
-                        <Route element={<Admin />} path="/admin" />
-                        <Route element={<Supervisor />} path="/supervisor" />
-                        <Route element={<Worker />} path="/worker" />
+                        <Route path="/" element={<Login />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/admin" element={<Admin />} />
+                        <Route path="/supervisor" element={<Supervisor />} />
+                        <Route path="/worker" element={<Worker />} />
                     </Routes>
                 </ScrollToTop>
             </BrowserRouter>

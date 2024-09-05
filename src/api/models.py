@@ -1,6 +1,13 @@
 from flask_sqlalchemy import SQLAlchemy
+import enum
+from sqlalchemy import Enum
 
 db = SQLAlchemy()
+
+class roleEnum(enum.Enum):
+    worker = 'worker'
+    supervisor = 'supervisor'
+    administrator = 'administrator'
 
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -8,7 +15,7 @@ class User(db.Model):
     password = db.Column(db.String(256), unique=True, nullable=False)
     salt = db.Column(db.String(256), unique=True, nullable=False)
     pic = db.Column(db.String(256), unique=True, nullable=False)
-    enum = db.Column(db.Integer, unique=True, nullable=False)
+    role = db.Column(Enum(roleEnum), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False)
 
     def __repr__(self):
@@ -16,9 +23,9 @@ class User(db.Model):
 
     def serialize(self):
         return {
-            "id": self.userId,
+            "id": self.id,
             "username": self.username,
-            "role" : self.userRoleID
+            "role" : self.role
             # do not serialize the password, its a security breach
         }
 
@@ -78,7 +85,7 @@ class Task(db.Model):
     worker_table = db.relationship("Worker", backref="task")
     supervisorId = db.Column(db.Integer, db.ForeignKey("supervisor.id"), nullable=False)
     supervisor_table = db.relationship("Supervisor", backref="task")
-    company = db.Column(db.String, db.ForeignKey("company.name"), nullable=False, unique=True)
+    company = db.Column(db.Integer, db.ForeignKey("company.id"), nullable=False, unique=True)
     company_table = db.relationship("Company", backref="task")
 
 class Issue(db.Model):
