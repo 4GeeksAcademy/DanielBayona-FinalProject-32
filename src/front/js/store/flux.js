@@ -47,17 +47,14 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			// SIGNUP / REGISTRO
-			signup: async(email, password) => {
+			register: async(user) => {
 				try{
-					let response = await fetch(process.env.BACKEND_URL+'/signup',{
+					let response = await fetch(p`${process.env.BACKEND_URL}/api/register`,{
 						method: 'POST',
 						headers: {
 							'Content-Type':'application/json'
 						},
-						body: JSON.stringify({
-							'email': email,
-							'password': password
-						})
+						body: JSON.stringify(user)
 					})
 					let data = await response.json()
 					if (response.ok){
