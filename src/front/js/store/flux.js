@@ -45,7 +45,32 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error);
 
 				}
-			}
+			},
+			// SIGNUP / REGISTRO
+			signup: async(email, password) => {
+				try{
+					let response = await fetch(process.env.BACKEND_URL+'/signup',{
+						method: 'POST',
+						headers: {
+							'Content-Type':'application/json'
+						},
+						body: JSON.stringify({
+							'email': email,
+							'password': password
+						})
+					})
+					let data = await response.json()
+					if (response.ok){
+						return true;
+					}
+					return data;
+				}
+				catch (error) {
+					console.log(error);
+					return {'error':'unexpected error'};
+				}
+			},
+
 		}
 	};
 };
