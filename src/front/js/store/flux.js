@@ -35,16 +35,32 @@ const getState = ({ getStore, getActions, setStore }) => {
 							token: data.token
 						})
 						localStorage.setItem("token", data.token)
-
-
 						return data.role
 					} else {
 						return false
 					}
 				} catch (error) {
 					console.log(error);
-
 				}
+			},
+			getUser: async () => {
+				try {
+					let response = await fetch(`${process.env.BACKEND_URL}/api/login`)
+					let data = await response.json()
+
+					if (response.status === 200) {
+						setStore({
+							user: data.role
+						})
+						return data.rol
+					}else{
+						return false
+					}
+
+				} catch (error) {
+					console.log(error)
+				}
+
 			}
 		}
 	};
