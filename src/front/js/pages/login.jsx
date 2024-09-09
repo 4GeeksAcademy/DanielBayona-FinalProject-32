@@ -11,7 +11,7 @@ const initialState = {
 };
 
 export const Login = () => {
-  const { actions } = useContext(Context);
+  const {store, actions } = useContext(Context);
   const navigate = useNavigate();
 
   const [user, setUser] = useState(initialState);
@@ -26,8 +26,8 @@ export const Login = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await actions.login(user);
-
+      const response = await actions.login(user);      
+      
       if (response === "worker") {
         navigate("/worker");
       } else if (response === "supervisor") {
