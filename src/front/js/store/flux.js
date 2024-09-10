@@ -35,6 +35,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 							token: data.token
 						})
 						localStorage.setItem("token", data.token)
+						getActions().getUser()
 						return data.role
 					} else {
 						return false
@@ -45,14 +46,19 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getUser: async () => {
 				try {
-					let response = await fetch(`${process.env.BACKEND_URL}/api/login`)
-					let data = await response.json()
+					const response = await fetch(`${process.env.BACKEND_URL}/api/valid-token`, {
+						"method": "GET",
+						"headers": {
+							"Authorization": `Bearer ${getStore().token}`
+						}
+					})
+					const data = await response.json()
 
-					if (response.status === 200) {
+					if (response.ok) {
 						setStore({
 							user: data.role
 						})
-						return data.rol
+						localStorage.setItem('user', JSON.stringify(data))
 					} else {
 						return false
 					}
