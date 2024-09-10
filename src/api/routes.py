@@ -123,8 +123,12 @@ def valid_token():
     # Access the identity of the current user with get_jwt_identity
     current_user = get_jwt_identity()
     
-    user_exist = User.query.filter_by(id=current_user).first()
-    if user_exist is None:
-        return jsonify(logged=False), 404
+    try:
+        user_exist = User.query.filter_by(id=current_user).first()
+        if user_exist is None:
+            return jsonify({"logged": False}), 404
 
-    return jsonify(user_exist.serialize(), logged=True), 200
+        return jsonify({"user": user_exist.serialize(), "logged":True}), 200
+    except Exception as error:
+        print(error.args)
+        return jsonify(error.args)

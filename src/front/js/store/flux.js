@@ -30,11 +30,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 					})
 
 					const data = await response.json()
+					console.log(data);
+
 					if (response.status == 200) {
 						setStore({
-							token: data.token
+							token: data.access_token
 						})
-						localStorage.setItem("token", data.token)
+						localStorage.setItem("access_token", data.access_token)
 						getActions().getUser()
 						return data.role
 					} else {
@@ -50,6 +52,8 @@ const getState = ({ getStore, getActions, setStore }) => {
 				})
 				localStorage.removeItem("token")
 				localStorage.removeItem("user")
+
+				return true
 			},
 			getUser: async () => {
 				try {

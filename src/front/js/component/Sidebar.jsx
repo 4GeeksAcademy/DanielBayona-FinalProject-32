@@ -23,6 +23,8 @@ export const Sidebar = () => {
 
   const handleLogout = () => {
     const response = actions.logout();
+    console.log("funciona");
+
     if (response) {
       navigate("/");
     }
@@ -88,7 +90,7 @@ export const Sidebar = () => {
               <a
                 className="nav-link text-dark fst-italic fw-bolder"
                 aria-current="page"
-                onClick={handleLogout}
+                onClick={() => handleLogout()}
               >
                 <FontAwesomeIcon icon={faRightFromBracket} className="pe-2" />
                 LOG OUT
