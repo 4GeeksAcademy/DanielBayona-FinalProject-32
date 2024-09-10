@@ -38,6 +38,7 @@ def registerUser():
     username = datatest.get('username')
     password = datatest.get('password')
     pic = datatest.get("pic")
+    pic_id = datatest.get("pic")
     role = datatest.get('role')
     is_active = datatest.get('is_active')
     
@@ -60,6 +61,7 @@ def registerUser():
         password = password,
         salt = salt,
         pic = pic,
+        pic_id = pic_id,
         role = role,
         is_active = is_active
     )
@@ -98,16 +100,10 @@ def login():
 @api.route('/user', methods=["GET"])
 @jwt_required()
 def get_info_user():
-    user = User()
-    user = user.query.get(get_jwt_identity())
-    
-    # For debugin 
-    # print(user)
-    
-    if user is None:
-        return jsonify({'message': 'User not found'}), 404
-    
-    return jsonify(user.serialize()), 200 
+    users = User()
+    users = users.query.all
+    all_users =  list(map(lambda x:x.serialize(), users))
+    return jsonify(all_users)
      
 
 # PROTECTED ROUTE PROFILE / RUTA PROTEGIDA PERFIL
@@ -131,4 +127,4 @@ def valid_token():
     if user_exist is None:
         return jsonify(logged=False), 404
 
-    return jsonify(logged=True), 200
+    return jsonify(user_exist.serialize(), logged=True), 200
