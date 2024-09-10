@@ -44,6 +44,13 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error);
 				}
 			},
+			logout: () => {
+				setStore({
+					token: null
+				})
+				localStorage.removeItem("token")
+				localStorage.removeItem("user")
+			},
 			getUser: async () => {
 				try {
 					const response = await fetch(`${process.env.BACKEND_URL}/api/valid-token`, {
