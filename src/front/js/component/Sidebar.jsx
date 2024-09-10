@@ -1,18 +1,17 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import Logo from "../../img/Logo.png";
-import "../../styles/supervisorNavBar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
     faHouse,
-    faList,
-    faUserGroup,
-    faPen,
     faRightFromBracket,
+    faBug,
+    faUsers
 } from "@fortawesome/free-solid-svg-icons";
 import "../../styles/supervisorNavBar.css";
 
-export const SuperVisorNavBar = () => {
+ 
+export const Sidebar = () => {
     const [activeItem, setActiveItem] = useState(0);
 
     const handleChangeColor = (index) => {
@@ -56,7 +55,7 @@ export const SuperVisorNavBar = () => {
                                 aria-current="page"
                                 href="#"
                             >
-                                <FontAwesomeIcon icon={faList} className="pe-2" /> TASKS
+                                <FontAwesomeIcon icon={faBug} className="pe-2" /> BUGS
                             </a>
                         </li>
                         <li
@@ -69,22 +68,8 @@ export const SuperVisorNavBar = () => {
                                 aria-current="page"
                                 href="#"
                             >
-                                <FontAwesomeIcon icon={faUserGroup} className="pe-2" />
-                                WORKERS
-                            </a>
-                        </li>
-                        <li
-                            className={`nav-item ${activeItem === 3 ? "active" : ""}`}
-                            onClick={() => handleChangeColor(3)}
-                        >
-                            <a
-                                className={`nav-link fst-italic fw-bolder ${activeItem === 3 ? "text-white" : "text-dark"
-                                    }`}
-                                aria-current="page"
-                                href="#"
-                            >
-                                <FontAwesomeIcon icon={faPen} className="pe-2" />
-                                COMPANIES
+                                <FontAwesomeIcon icon={faUsers} className="pe-2" />
+                                USERS
                             </a>
                         </li>
                         <li className="nav-item bottom-item">
@@ -104,4 +89,4 @@ export const SuperVisorNavBar = () => {
     );
 };
 
-export default SuperVisorNavBar;
+export default Sidebar;
