@@ -53,7 +53,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 							user: data.role
 						})
 						return data.rol
-					}else{
+					} else {
 						return false
 					}
 
@@ -62,32 +62,32 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 			// SIGNUP / REGISTRO
-			register: async(user) => {
-				try{
-					let response = await fetch(p`${process.env.BACKEND_URL}/api/register`,{
+			register: async (user) => {
+				try {
+					let response = await fetch(p`${process.env.BACKEND_URL}/api/register`, {
 						method: 'POST',
 						headers: {
-							'Content-Type':'application/json'
+							'Content-Type': 'application/json'
 						},
 						body: JSON.stringify(user)
 					})
 					let data = await response.json()
-					if (response.ok){
+					if (response.ok) {
 						return true;
 					}
 					return data;
 				}
 				catch (error) {
 					console.log(error);
-					return {'error':'unexpected error'};
+					return { 'error': 'unexpected error' };
 				}
 			},
 
 
-			}
-
 		}
-	};
+
+	}
 };
+
 
 export default getState;
