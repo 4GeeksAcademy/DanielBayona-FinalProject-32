@@ -45,15 +45,15 @@ const getState = ({ getStore, getActions, setStore }) => {
 			},
 			getUser: async () => {
 				try {
-					let response = await fetch(`${process.env.BACKEND_URL}/api/login`)
+					let response = await fetch(`${process.env.BACKEND_URL}/api/valid-token`)
 					let data = await response.json()
 
 					if (response.status === 200) {
 						setStore({
 							user: data.role
 						})
-						return data.rol
-					}else{
+						return user
+					} else {
 						return false
 					}
 
