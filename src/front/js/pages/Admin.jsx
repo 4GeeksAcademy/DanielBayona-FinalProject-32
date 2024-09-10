@@ -1,14 +1,17 @@
-import React, { useState, useContext } from "react";
-import { Context } from "../store/appContext.js";
-import { useNavigate } from "react-router-dom";
-import Sidebar from "../../js/component/Sidebar.jsx";
+import React  from "react";
+import Sidebar from "../../js/component/Sidebar.jsx"
+import CreateUser from "../component/createUser.js";
 
-const Admin = () => {
-  return (
-    <>
-      <Sidebar />
-    </>
-  );
-};
+const  Admin =  () => {
+    return (
+            <>
+                <Sidebar />
+                <CreateUser/>
+            </>
+    )
+}
 
-export default Admin;
+
+
+export default Admin 
+
