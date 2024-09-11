@@ -1,5 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { Context } from "../store/appContext";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Logo from "../../img/Logo.png";
 import "../../styles/supervisorNavBar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -13,11 +15,21 @@ import {
 import "../../styles/supervisorNavBar.css";
 
 export const SuperVisorNavBar = () => {
+    const navigate = useNavigate()
+    const { store, actions } = useContext(Context);
     const [activeItem, setActiveItem] = useState(0);
 
     const handleChangeColor = (index) => {
         setActiveItem(index);
     };
+
+    const handleLogout = () => {
+        const response = actions.logout();
+
+        if (response) {
+            navigate("/");
+        }
+    }
 
     return (
         <nav className="navbar nav-bar-left navbar-left d-flex flex-column navbar-expand-lg">
@@ -91,7 +103,8 @@ export const SuperVisorNavBar = () => {
                             <a
                                 className="nav-link text-dark fst-italic fw-bolder"
                                 aria-current="page"
-                                href="#"
+                                onClick={() => handleLogout()}
+                                role="button"
                             >
                                 <FontAwesomeIcon icon={faRightFromBracket} className="pe-2" />
                                 LOG OUT

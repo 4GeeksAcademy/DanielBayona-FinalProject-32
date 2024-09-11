@@ -91,6 +91,7 @@ export const Sidebar = () => {
                 className="nav-link text-dark fst-italic fw-bolder"
                 aria-current="page"
                 onClick={() => handleLogout()}
+                role="button"
               >
                 <FontAwesomeIcon icon={faRightFromBracket} className="pe-2" />
                 LOG OUT

@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { Context } from "../store/appContext";
+import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHouse,
@@ -11,11 +13,21 @@ import "../../styles/workerNavBar.css";
 import Logo from "../../img/Logo.png";
 
 export const WorkerNavBar = () => {
+  const navigate = useNavigate();
+  const { store, actions } = useContext(Context);
   const [activeItem, setActiveItem] = useState(null);
 
   const handleChangeColor = (index) => {
     setActiveItem(index);
   };
+
+  const handleLogout = () => {
+    const response = actions.logout();
+
+    if (response) {
+      navigate("/")
+    }
+  }
 
   return (
     <nav className="navbar nav-bar-left navbar-left d-flex flex-column navbar-expand-lg">
@@ -35,9 +47,8 @@ export const WorkerNavBar = () => {
               onClick={() => handleChangeColor(0)}
             >
               <a
-                className={`nav-link fst-italic fw-bolder ${
-                  activeItem === 0 ? "text-white" : "text-dark"
-                }`}
+                className={`nav-link fst-italic fw-bolder ${activeItem === 0 ? "text-white" : "text-dark"
+                  }`}
                 aria-current="page"
                 href="#"
               >
@@ -50,9 +61,8 @@ export const WorkerNavBar = () => {
               onClick={() => handleChangeColor(1)}
             >
               <a
-                className={`nav-link fst-italic fw-bolder ${
-                  activeItem === 1 ? "text-white" : "text-dark"
-                }`}
+                className={`nav-link fst-italic fw-bolder ${activeItem === 1 ? "text-white" : "text-dark"
+                  }`}
                 aria-current="page"
                 href="#"
               >
@@ -64,9 +74,8 @@ export const WorkerNavBar = () => {
               onClick={() => handleChangeColor(2)}
             >
               <a
-                className={`nav-link fst-italic fw-bolder ${
-                  activeItem === 2 ? "text-white" : "text-dark"
-                }`}
+                className={`nav-link fst-italic fw-bolder ${activeItem === 2 ? "text-white" : "text-dark"
+                  }`}
                 aria-current="page"
                 href="#"
               >
@@ -79,9 +88,8 @@ export const WorkerNavBar = () => {
               onClick={() => handleChangeColor(3)}
             >
               <a
-                className={`nav-link fst-italic fw-bolder ${
-                  activeItem === 3 ? "text-white" : "text-dark"
-                }`}
+                className={`nav-link fst-italic fw-bolder ${activeItem === 3 ? "text-white" : "text-dark"
+                  }`}
                 aria-current="page"
                 href="#"
               >
@@ -93,7 +101,8 @@ export const WorkerNavBar = () => {
               <a
                 className="nav-link text-dark fst-italic fw-bolder"
                 aria-current="page"
-                href="#"
+                onClick={() => handleLogout()}
+                role="button"
               >
                 <FontAwesomeIcon icon={faRightFromBracket} className="pe-2" />
                 LOG OUT
