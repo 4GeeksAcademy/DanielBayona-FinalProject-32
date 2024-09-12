@@ -14,10 +14,10 @@ class User(db.Model):
     username = db.Column(db.String(16), unique=True, nullable=False)
     password = db.Column(db.String(256), unique=True, nullable=False)
     salt = db.Column(db.String(256), unique=True, nullable=False)
-    pic = db.Column(db.String(256), unique=True, nullable=False)
+    pic = db.Column(db.String(256), unique=True, nullable=False, default="https://i.pravatar.cc/300")
     pic_id = db.Column(db.String(256), unique=True, nullable=False)
     role = db.Column(Enum(roleEnum), unique=False, nullable=False)
-    is_active = db.Column(db.Boolean(), unique=False, nullable=False)
+    is_active = db.Column(db.Boolean(), unique=False, nullable=False, default=False)
 
     def __repr__(self):
         return f'<User {self.username}>'
@@ -26,7 +26,8 @@ class User(db.Model):
         return {
             "id": self.id,
             "username": self.username,
-            "role" : self.role.value
+            "role" : self.role.value,
+            "pic": self.pic
             # do not serialize the password, its a security breach
         }
 

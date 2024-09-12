@@ -81,18 +81,12 @@ const getState = ({ getStore, getActions, setStore }) => {
 			// SIGNUP / REGISTRO
 			register: async (user) => {
 				try {
-					let response = await fetch(p`${process.env.BACKEND_URL}/api/register`, {
+					let response = await fetch(`${process.env.BACKEND_URL}/api/register`, {
 						method: 'POST',
-						headers: {
-							'Content-Type': 'application/json'
-						},
-						body: JSON.stringify(user)
+						body: user
 					})
-					let data = await response.json()
-					if (response.ok) {
-						return true;
-					}
-					return data;
+
+					return response.status
 				}
 				catch (error) {
 					console.log(error);

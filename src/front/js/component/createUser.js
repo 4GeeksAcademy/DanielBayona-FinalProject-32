@@ -1,31 +1,61 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 import Logo from "../../img/Logo.png";
 
+const initialState = {
+    "username": "",
+    "password": "",
+    "pic": "",
+    "role": "worker"
+}
+
 const CreateUserForm = () => {
-    const navigate = useNavigate();
+    const { store, actions } = useContext(Context);
+    const [user, setUser] = useState(initialState);
+    const [picPreview, setPicPreview] = useState("");
 
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
-    const [role, setRole] = useState('worker'); 
-
-    const handleSubmit = async (event) => {
-        event.preventDefault();
-        const user = { username, password, role };
-        try {
-            const response = role;
-            if (response === "worker") {
-                navigate("/worker");
-            } else if (response === "supervisor") {
-                navigate("/supervisor");
-            } else if (response === "administrador") {
-                navigate("/admin");
-            } else {
-                console.log("Error al crear usuario");
-            }
-        } catch (error) {
-            console.log(error);
+    const handleChange = (event) => {
+        const { name, value, files } = event.target;
+        if (name === "pic") {
+            const file = files[0];
+            setUser({
+                ...user,
+                pic: file
+            });
+            setPicPreview(URL.createObjectURL(file))
+        } else {
+            setUser({
+                ...user,
+                [name]: value
+            });
         }
+    }
+
+    const handleSubmit = (event) => {
+        event.preventDefault();
+
+        const formData = new FormData();
+        formData.append("username", user.username);
+        formData.append("password", user.password);
+        formData.append("role", user.role);
+        formData.append("pic", user.pic);
+
+        const response = actions.register(formData);
+        console.log("sirvo");
+
+        response
+            .then((res) => {
+                if (res == 201) {
+                    setUser(initialState)
+                    setPicPreview("");
+                    alert("Usuario registrado exitosamente")
+                } else if (res == 400) {
+                    alert("El usuario ya existe")
+                } else {
+                    alert("Error al registrar el usuario, si el proble persiste comuniquese con el admin de la web")
+                }
+            })
     };
 
     return (
@@ -35,46 +65,58 @@ const CreateUserForm = () => {
                 flexDirection: "column",
                 gap: "20px",
                 width: "400%",
-                maxWidth: "750px", 
+                maxWidth: "750px",
                 backgroundColor: "white",
                 padding: "45px",
                 borderRadius: "8px",
                 boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)"
             }}>
-                <img
-                    src={require("../../img/Imagen1user.png").default}
-                    alt="Imagen de usuario"
-                    style={{ width: "120px", height: "120px", alignSelf: "center" }}
-                />
+                <div style={{ textAlign: "center" }}>
+                    <label htmlFor="pic-upload" style={{ cursor: "pointer" }}>
+                        <img
+                            src={picPreview || require("../../img/Imagen1user.png").default}
+                            alt="User Image"
+                            style={{ width: "120px", height: "120px", borderRadius: "50%" }}
+                        />
+                        <input
+                            id="pic-upload"
+                            type="file"
+                            name="pic"
+                            accept="image/*"
+                            onChange={handleChange}
+                            style={{ display: "none" }}
+                        />
+                    </label>
+                </div>
                 <div className="container mt-3">
                     <label style={{ display: "flex", flexDirection: "column", marginBottom: "10px" }}>
                         User name input:
-                        <input 
-                            name="username" 
-                            type="text" 
-                            className="form-control" 
-                            value={username} 
-                            onChange={(e) => setUsername(e.target.value)} 
+                        <input
+                            name="username"
+                            type="text"
+                            className="form-control"
+                            value={user.username}
+                            onChange={handleChange}
                         />
                     </label>
                     <label style={{ display: "flex", flexDirection: "column", marginBottom: "10px" }}>
                         User password input:
-                        <input 
-                            name="password" 
-                            type="password" 
-                            className="form-control" 
-                            value={password} 
-                            onChange={(e) => setPassword(e.target.value)} 
+                        <input
+                            name="password"
+                            type="password"
+                            className="form-control"
+                            value={user.password}
+                            onChange={handleChange}
                         />
                     </label>
                     <label style={{ display: "flex", flexDirection: "column", marginBottom: "10px" }}>
                         Role dropdown:
-                        <select 
+                        <select
                             name="role"
-                            className="form-select" 
-                            style={{ backgroundColor: "#A5C894" }} 
-                            value={role} 
-                            onChange={(e) => setRole(e.target.value)}
+                            className="form-select"
+                            style={{ backgroundColor: "#A5C894" }}
+                            value={user.role}
+                            onChange={handleChange}
                         >
                             <option value="worker">Worker</option>
                             <option value="supervisor">Supervisor</option>
@@ -82,9 +124,9 @@ const CreateUserForm = () => {
                         </select>
                     </label>
                 </div>
-                <button 
-                    type="submit" 
-                    className="btn btn-secondary btn-sm" 
+                <button
+                    type="submit"
+                    className="btn btn-secondary btn-sm"
                     style={{
                         width: "150px",
                         alignSelf: "center",

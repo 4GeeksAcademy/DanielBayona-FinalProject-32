@@ -10,6 +10,7 @@ from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identi
 from api.utils import set_password, check_password
 from base64 import b64encode
 import os
+import cloudinary.uploader as uploader
 
 api = Blueprint('api', __name__)
 
@@ -28,44 +29,38 @@ def handle_hello():
 
 @api.route('/register', methods=['POST'])
 def registerUser():
-    formData = request.form
-    datatest = request.json
-    # data = {
-    #     "username": formData.get('username'),
-    #     "password": formData.get('password')
-    # }
+    form_data = request.form
+    data_files = request.files 
+    #data = request.json
     
-    username = datatest.get('username')
-    password = datatest.get('password')
-    pic = datatest.get("pic")
-    pic_id = datatest.get("pic")
-    role = datatest.get('role')
-    is_active = datatest.get('is_active')
-    
-    # username =  data.get('username', None)
-    # password = data.get('password', None)
-    
+    username = form_data.get('username')
+    password = form_data.get('password')
+    role = form_data.get('role')
+    pic = data_files.get("pic")
+
+
     if username is None or password is None:
         return jsonify('Alguno de los campos esta vacio, porfavor verificar'), 400
     else:
         user = User()
         user = user.query.filter_by(username = username).one_or_none()
-        
         if user is not None:
             return jsonify('Usuario ya existe'), 400
     salt = b64encode(os.urandom(32)).decode('utf-8')
     password = set_password(password, salt)
     
+    result_cloud = uploader.upload(pic)
+    pic_url = result_cloud.get("secure_url")
+    pic_id = result_cloud.get("public_id")
+    
     user = User(
         username = username,
         password = password,
         salt = salt,
-        pic = pic,
+        pic = pic_url,
         pic_id = pic_id,
         role = role,
-        is_active = is_active
-    )
-    
+    ) 
     try:
         db.session.add(user)
         db.session.commit()
