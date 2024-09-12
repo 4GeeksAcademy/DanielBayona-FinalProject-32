@@ -2,8 +2,8 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User
-from sqlalchemy import select
+from api.models import db, User, Issue
+from sqlalchemy import delete, update
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
@@ -27,7 +27,7 @@ def handle_hello():
 
     return jsonify(response_body), 200
 
-@api.route('/register', methods=['POST'])
+@api.route('/user', methods=['POST'])
 def registerUser():
     form_data = request.form
     data_files = request.files 
@@ -64,12 +64,88 @@ def registerUser():
     try:
         db.session.add(user)
         db.session.commit()
-        return jsonify({"message": "Usuario creado"}), 201
+        return jsonify({"message": "User created"}), 201
     except Exception as error:
         print(error.args)
         db.session.rollback()
-        return jsonify({"message": f"Error al crear usuario {error}"}), 400
+        return jsonify({"message": f"Error at creating user {error}"}), 400
+
+@api.route('/user', methods=["GET"])
+def get_users():
+    users = User()
+    users = users.query.all
+    all_users =  list(map(lambda x:x.serialize(), users))
+    return jsonify(all_users)
+
+@api.route('/user/int<int:id>', methods=["GET"])
+def get_user():
+    form_data = request.form
+    id = form_data.get('id')
+    user= user()
+    try:
+        user= user.query.filter_by(id = id).first
+        return (user.serialize())
+    except Exception as error:
+        return jsonify({"message": f"Error at finding user{error}"}), 400
+
+@api.route('/user/int<int:id>', methods=["PUT"])
+def update_user():
+    form_data = request.form
+    data_files = request.files 
+    #data = request.json
     
+    username = form_data.get('username')
+    id = form_data.get('id')
+    password = form_data.get('password')
+    role = form_data.get('role')
+    pic = data_files.get("pic")
+
+    if username is None or password is None:
+        return jsonify('Missing fields.'), 400
+    else:
+        user = User()
+        user = user.query.filter_by(id = id).one_or_none()
+        if user is None:
+            return jsonify('User doesnt exist'), 400
+    salt = b64encode(os.urandom(32)).decode('utf-8')
+    password = set_password(password, salt)
+    
+    result_cloud = uploader.upload(pic)
+    pic_url = result_cloud.get("secure_url")
+    pic_id = result_cloud.get("public_id")
+
+    user = User()
+
+    try: 
+        user= update(user).where(id = id).values(
+        username = username,
+        password = password,
+        salt = salt,
+        pic = pic_url,
+        pic_id = pic_id,
+        role = role,)
+
+        db.session.commit()
+        return jsonify({"message": "User updated"}), 201
+    except Exception as error:
+        print(error.args)
+        db.session.rollback()
+        return jsonify({"message": f"Error at updating user {error}"}), 400
+
+@api.route('/user/<int:id>', methods=["DELETE"])
+def delete_user():
+    form_data = request.form
+    id = form_data.get('id')
+    user = User()
+    try:
+        user = delete(user).where(id = id)
+        db.session.commit()
+        return jsonify({"message": "User has been deleted successfully"}, 201)
+    except Exception as error:
+        print(error.args)
+        db.session.rollback()
+        return jsonify({"message": f"Error at deleting user {error}"}), 400
+
 @api.route('/login', methods=['POST'])
 def login():
     user = request.get_json()
@@ -92,13 +168,7 @@ def login():
         return jsonify({"error": "incorrect credentials"}), 401
 
      
-@api.route('/user', methods=["GET"])
-@jwt_required()
-def get_info_user():
-    users = User()
-    users = users.query.all
-    all_users =  list(map(lambda x:x.serialize(), users))
-    return jsonify(all_users)
+
      
 
 # PROTECTED ROUTE PROFILE / RUTA PROTEGIDA PERFIL
@@ -127,3 +197,98 @@ def valid_token():
     except Exception as error:
         print(error.args)
         return jsonify(error.args)
+    
+@api.route("/issue", methods=["GET"])
+def  get_issues():
+    issues= Issue()
+    issues= issues.query.all
+    all_issues =  list(map(lambda x:x.serialize(), issues))
+    return jsonify(all_issues)
+
+@api.route('/issue/int<int:id>', methods=["GET"])
+def get_issue():
+    form_data = request.form
+    id = form_data.get('id')
+    issue= Issue()
+    try:
+        issue= issue.query.filter_by(id = id).first
+        return (issue.serialize())
+    except Exception as error:
+        return jsonify({"message": f"Error at finding issue{error}"}), 400
+
+@api.route("/issue", methods=["POST"])
+def create_issue():
+    form_data = request.form
+    data_files = request.files 
+    
+    name = form_data.get('name')
+    desc = form_data.get('desc')
+    user_id= data_files.get('user_id')
+    proof = data_files.get("proof") 
+
+    result_cloud = uploader.upload(proof)
+    proof_url = result_cloud.get("secure_url")
+    proof_id = result_cloud.get("public_id")
+
+    issue = Issue(
+        name = name,
+        desc = desc,
+        user_id = user_id,
+        proof = proof_url,
+        proof_id = proof_id
+    )
+
+    try:
+        db.session.add(issue)
+        db.session.commit()
+        return jsonify({"message": "Issue created"}), 201
+    except Exception as error:
+        print(error.args)
+        db.session.rollback()
+        return jsonify({"message": f"Error at creating issue {error}"}), 400
+
+@api.route("/issue/<int:id>", methods=["PUT"])
+def update_issue():
+    form_data = request.form
+    data_files = request.files 
+    
+    name = form_data.get('name')
+    id = form_data.get('id')
+    desc = form_data.get('desc')
+    status = data_files.get('status')
+    proof = data_files.get("proof") 
+
+    result_cloud = uploader.upload(proof)
+    proof_url = result_cloud.get("secure_url")
+    proof_id = result_cloud.get("public_id")
+
+    issue = Issue()
+
+    try:
+        issue = update(issue).where(id = id).values(
+        name = name,
+        desc = desc,
+        proof = proof_url,
+        proof_id = proof_id,
+        status = status
+        )
+        db.session.commit()
+        return jsonify({"message": "Issue updated"}), 201
+    except Exception as error:
+        print(error.args)
+        db.session.rollback()
+        return jsonify({"message": f"Error at updating issue {error}"}), 400
+    
+@api.route("/issue/<int:id>", methods=["DELETE"])
+def delete_user():
+    form_data = request.form
+    id = form_data.get('id')
+    issue = Issue()
+    try:
+        issue = delete(issue).where(id = id)
+        db.session.commit()
+        return jsonify({"message": "Issue has been deleted successfully"}, 201)
+    except Exception as error:
+        print(error.args)
+        db.session.rollback()
+        return jsonify({"message": f"Error at deleting issue {error}"}), 400

@@ -14,7 +14,7 @@ class User(db.Model):
     username = db.Column(db.String(16), unique=True, nullable=False)
     password = db.Column(db.String(256), unique=True, nullable=False)
     salt = db.Column(db.String(256), unique=True, nullable=False)
-    pic = db.Column(db.String(256), unique=True, nullable=False, default="https://i.pravatar.cc/300")
+    pic = db.Column(db.String(256), unique=True, nullable=False)
     pic_id = db.Column(db.String(256), unique=True, nullable=False)
     role = db.Column(Enum(roleEnum), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False, default=False)
@@ -26,8 +26,7 @@ class User(db.Model):
         return {
             "id": self.id,
             "username": self.username,
-            "role" : self.role.value,
-            "pic": self.pic
+            "role" : self.role
             # do not serialize the password, its a security breach
         }
 
@@ -95,11 +94,10 @@ class Issue(db.Model):
     name= db.Column(db.String(50), nullable=False)
     desc= db.Column(db.String, nullable=False)
     proof = db.Column(db.String, nullable=False)
+    proof_id = db.Column(db.Integer)
     review = db.Column(db.String)
-    status = db.Column(db.String, nullable=False)
-    admin_id = db.Column(db.Integer, db.ForeignKey("administrator.id"), nullable=False)
+    status = db.Column(db.String, nullable=False, default="To Review")
+    admin_id = db.Column(db.Integer, db.ForeignKey("administrator.id"))
     administrator_table = db.relationship("Administrator", backref="issue") 
-    worker_id = db.Column(db.Integer, db.ForeignKey("worker.id"))
-    worker_table = db.relationship("Worker", backref="issue") 
-    supervisor_id = db.Column(db.Integer, db.ForeignKey("supervisor.id"))
-    supervisor_table = db.relationship("Supervisor", backref="issue") 
+    user_id =  db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    user_table = db.relationship("User", backref="issue")
