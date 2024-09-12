@@ -4,6 +4,7 @@ import { Context } from "../store/appContext.js";
 import Logo from "../../img/Logo.png";
 import "../../styles/home.css";
 import "../../styles/login.css";
+import Swal from "sweetalert2";
 
 const initialState = {
   username: "",
@@ -11,7 +12,7 @@ const initialState = {
 };
 
 export const Login = () => {
-  const {store, actions } = useContext(Context);
+  const { store, actions } = useContext(Context);
   const navigate = useNavigate();
 
   const [user, setUser] = useState(initialState);
@@ -26,8 +27,8 @@ export const Login = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     try {
-      const response = await actions.login(user);      
-      
+      const response = await actions.login(user);
+
       if (response === "worker") {
         navigate("/worker");
       } else if (response === "supervisor") {
@@ -35,7 +36,11 @@ export const Login = () => {
       } else if (response === "administrator") {
         navigate("/admin");
       } else {
-        console.log("Error al iniciar");
+        Swal.fire({
+          icon: "error",
+          title: "User dosent exists",
+          text: "Please Contact Admin for user cREATION",
+        });
       }
     } catch (error) {
       console.log(error);

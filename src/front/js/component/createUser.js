@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 import Logo from "../../img/Logo.png";
+import Swal from 'sweetalert2'
 
 const initialState = {
     "username": "",
@@ -49,11 +50,25 @@ const CreateUserForm = () => {
                 if (res == 201) {
                     setUser(initialState)
                     setPicPreview("");
-                    alert("User Created")
+                    Swal.fire({
+                        position: "center",
+                        icon: "success",
+                        title: "User created successfully",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
                 } else if (res == 400) {
-                    alert("The user already exists")
+                    Swal.fire({
+                        icon: "error",
+                        title: "Oops...",
+                        text: "The user already exists",
+                    });
                 } else {
-                    alert("Error while creating user, please contact the admin")
+                    Swal.fire({
+                        icon: "error",
+                        title: "Error",
+                        text: "There was an error while creating the user. Please contact the admin.",
+                    });
                 }
             })
     };
