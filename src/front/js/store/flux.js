@@ -81,7 +81,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			// SIGNUP / REGISTRO
 			register: async (user) => {
 				try {
-					let response = await fetch(`${process.env.BACKEND_URL}/api/register`, {
+					let response = await fetch(`${process.env.BACKEND_URL}/api/user`, {
 						method: 'POST',
 						body: user
 					})
