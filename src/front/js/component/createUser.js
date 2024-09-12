@@ -49,11 +49,11 @@ const CreateUserForm = () => {
                 if (res == 201) {
                     setUser(initialState)
                     setPicPreview("");
-                    alert("Usuario registrado exitosamente")
+                    alert("User Created")
                 } else if (res == 400) {
-                    alert("El usuario ya existe")
+                    alert("The user already exists")
                 } else {
-                    alert("Error al registrar el usuario, si el proble persiste comuniquese con el admin de la web")
+                    alert("Error while creating user, please contact the admin")
                 }
             })
     };
