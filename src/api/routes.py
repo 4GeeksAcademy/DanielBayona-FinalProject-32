@@ -77,7 +77,7 @@ def get_users():
     all_users =  list(map(lambda x:x.serialize(), users))
     return jsonify(all_users)
 
-@api.route('/user/int<int:id>', methods=["GET"])
+@api.route('/user/<int:id>', methods=["GET"])
 def get_user():
     form_data = request.form
     id = form_data.get('id')
@@ -280,7 +280,7 @@ def update_issue():
         return jsonify({"message": f"Error at updating issue {error}"}), 400
     
 @api.route("/issue/<int:id>", methods=["DELETE"])
-def delete_user():
+def delete_issue():
     form_data = request.form
     id = form_data.get('id')
     issue = Issue()
