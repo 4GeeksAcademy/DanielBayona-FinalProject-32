@@ -1,7 +1,6 @@
 import React, { useState, useContext } from "react";
 import { Context } from "../store/appContext.js";
-import { useNavigate } from "react-router-dom";
-import { Link } from "react-router-dom";
+import { useNavigate, NavLink, Link } from "react-router-dom";
 import Logo from "../../img/Logo.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -17,10 +16,6 @@ export const Sidebar = () => {
   const { store, actions } = useContext(Context);
   const navigate = useNavigate();
 
-  const handleChangeColor = (index) => {
-    setActiveItem(index);
-  };
-
   const handleLogout = () => {
     const response = actions.logout();
     console.log("funciona");
@@ -29,6 +24,7 @@ export const Sidebar = () => {
       navigate("/");
     }
   };
+
   return (
     <nav className="navbar nav-bar-left navbar-left d-flex flex-column navbar-expand-lg">
       <div className="container-fluid flex-column">
@@ -42,54 +38,49 @@ export const Sidebar = () => {
         </a>
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav flex-column mt-5">
-            <li
-              className={`nav-item ${activeItem === 0 ? "active" : ""}`}
-              onClick={() => handleChangeColor(0)}
-            >
-              <a
-                className={`nav-link fst-italic fw-bolder ${
-                  activeItem === 0 ? "text-white" : "text-dark"
-                }`}
-                aria-current="page"
-                href="#"
+            <li>
+              <NavLink
+                end
+                className={({ isActive }) =>
+                  isActive
+                    ? "nav-link active transition  text-white fst-italic fw-bolder"
+                    : "nav-link inactive transition  text-dark fst-italic fw-bolder"
+                }
+                to="/admin"
               >
                 <FontAwesomeIcon icon={faHouse} className="pe-2" />
                 HOME
-              </a>
+              </NavLink>
             </li>
-            <li
-              className={`nav-item ${activeItem === 1 ? "active" : ""}`}
-              onClick={() => handleChangeColor(1)}
-            >
-              <a
-                className={`nav-link fst-italic fw-bolder ${
-                  activeItem === 1 ? "text-white" : "text-dark"
-                }`}
-                aria-current="page"
-                href="#"
+            <li>
+              <NavLink
+                end
+                className={({ isActive }) =>
+                  isActive
+                    ? "nav-link active transition  text-white fst-italic fw-bolder"
+                    : "nav-link inactive transition  text-dark fst-italic fw-bolder"
+                }
+                to="/admin/CreateIssue"
               >
-                <FontAwesomeIcon icon={faBug} className="pe-2" /> BUGS
-              </a>
+                <FontAwesomeIcon icon={faBug} className="pe-2" /> CREATE ISSUES
+              </NavLink>
             </li>
-            <li
-              className={`nav-item ${activeItem === 2 ? "active" : ""}`}
-              onClick={() => handleChangeColor(2)}
-            >
-              <a
-                className={`nav-link fst-italic fw-bolder ${
-                  activeItem === 2 ? "text-white" : "text-dark"
-                }`}
-                aria-current="page"
-                href="#"
+            <li>
+              <NavLink
+                className={({ isActive }) =>
+                  isActive
+                    ? "nav-link active transition  text-white fst-italic fw-bolder"
+                    : "nav-link inactive transition  text-dark fst-italic fw-bolder"
+                }
+                to="/admin/CreateUser"
               >
                 <FontAwesomeIcon icon={faUsers} className="pe-2" />
-                USERS
-              </a>
+                CREATE USER
+              </NavLink>
             </li>
             <li className="nav-item bottom-item">
               <a
                 className="nav-link text-dark fst-italic fw-bolder"
-                aria-current="page"
                 onClick={() => handleLogout()}
                 role="button"
               >

@@ -39,7 +39,7 @@ export const Login = () => {
         Swal.fire({
           icon: "error",
           title: "User dosent exists",
-          text: "Please Contact Admin for user cREATION",
+          text: "Please Contact Admin for user creation",
         });
       }
     } catch (error) {
