@@ -9,6 +9,8 @@ import Login from "./pages/login.jsx";
 import Admin from "./pages/Admin.jsx"
 import Supervisor from "./pages/supervisor.jsx"
 import Worker from "./pages/worker.jsx"
+import AdminCreateUser from "./pages/adminCreateUser.jsx";
+import AdminCreateIssue from "./pages/adminCreateIssue.jsx";
 
 
 import injectContext from "./store/appContext";
@@ -33,6 +35,8 @@ const Layout = () => {
                         <Route path="/admin" element={<Admin />} />
                         <Route path="/supervisor" element={<Supervisor />} />
                         <Route path="/worker" element={<Worker />} />
+                        <Route path="/admin/CreateUser" element={<AdminCreateUser />} />
+                        <Route path="/admin/CreateIssue" element={<AdminCreateIssue />} />
                     </Routes>
                 </ScrollToTop>
             </BrowserRouter>

@@ -105,7 +105,7 @@ const CreateUserForm = () => {
                 </div>
                 <div className="container mt-3">
                     <label style={{ display: "flex", flexDirection: "column", marginBottom: "10px" }}>
-                        User name input:
+                        Username:
                         <input
                             name="username"
                             type="text"
@@ -115,7 +115,7 @@ const CreateUserForm = () => {
                         />
                     </label>
                     <label style={{ display: "flex", flexDirection: "column", marginBottom: "10px" }}>
-                        User password input:
+                        Password:
                         <input
                             name="password"
                             type="password"
@@ -125,7 +125,7 @@ const CreateUserForm = () => {
                         />
                     </label>
                     <label style={{ display: "flex", flexDirection: "column", marginBottom: "10px" }}>
-                        Role dropdown:
+                        Role:
                         <select
                             name="role"
                             className="form-select"
