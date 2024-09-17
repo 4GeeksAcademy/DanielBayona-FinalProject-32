@@ -120,17 +120,18 @@ class Company(db.Model):
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name= db.Column(db.String(50), nullable=False)
+    work = db.Column(db.String(256))
+    work_id = db.Column(db.String(256))
     desc= db.Column(db.String, nullable=False)
-    proof = db.Column(db.String, nullable=False)
-    proof_id = db.Column(db.String, nullable=False)
     review = db.Column(db.String(254))
     status = db.Column(db.String(254), nullable=False, default="To be reviewed")
     worker_id = db.Column(db.Integer, db.ForeignKey("worker.id"), nullable=False)
     worker_table = db.relationship("Worker", backref="task")
-    supervisor_id = db.Column(db.Integer, db.ForeignKey("supervisor.id"), nullable=False)
+    supervisor_id = db.Column(db.Integer, db.ForeignKey("supervisor.id"))
     supervisor_table = db.relationship("Supervisor", backref="task")
     company = db.Column(db.Integer, db.ForeignKey("company.id"), nullable=False, unique=True)
     company_table = db.relationship("Company", backref="task")
+
     def __repr__(self):
         return f'<Task: {self.name} ID: {self.id}>'
 
@@ -140,8 +141,6 @@ class Task(db.Model):
             "name": self.name,
             "desc" : self.desc,
             "worker_id" : self.worker_id,
-            "proof" : self.proof,
-            "proof_id" : self.proof_id,
             "status" : self.status
         }
 

@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Issue
+from api.models import db, User, Issue, Supervisor
 from sqlalchemy import delete, update
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
@@ -81,7 +81,7 @@ def get_users():
 def get_user():
     form_data = request.form
     id = form_data.get('id')
-    user= user()
+    user= User()
     try:
         user= user.query.filter_by(id = id).first
         return (user.serialize())
@@ -297,3 +297,119 @@ def delete_issue():
         print(error.args)
         db.session.rollback()
         return jsonify({"message": f"Error at deleting issue {error}"}), 400
+    
+@api.route('/supervisor', methods=['POST'])
+def createSupervisor():
+    form_data = request.form
+    #data = request.json
+    
+    name = form_data.get('name')
+    last_name = form_data.get('last_name')
+    username = form_data.get('username')
+    position = form_data.get('position')
+    mail = form_data.get('mail')
+    adress = form_data.get("adress")
+    phone = form_data.get("phone")
+    identification = form_data.get("identification")
+
+
+    supervisor = Supervisor()
+    supervisor = supervisor.query.filter_by(identification = identification).one_or_none()
+    if supervisor is not None:
+        return jsonify('Supervisor already exists'), 400
+
+    
+    supervisor = Supervisor(
+        name = name,
+        last_name = last_name,
+        username = username,
+        position = position,
+        mail = mail,
+        adress = adress,
+        phone = phone,
+        identification = identification
+    ) 
+    try:
+        db.session.add(supervisor)
+        db.session.commit()
+        return jsonify({"message": "Supervisor created"}), 201
+    except Exception as error:
+        print(error.args)
+        db.session.rollback()
+        return jsonify({"message": f"Supervisor couldn't be created {error}"}), 400
+
+@api.route('/supervisor', methods=["GET"])
+def get_supervisors():
+    supervisors = Supervisor()
+    supervisors = supervisors.query.all()
+    all_supervisors =  list(map(lambda x:x.serialize(), supervisors))
+    return jsonify(all_supervisors)
+
+@api.route('/supervisor', methods=["DELETE"])
+def delete_supervisor():
+    form_data = request.form
+    id = form_data.get('id')
+
+    try:
+        supervisor= Supervisor.query.filter_by(id=id).first()
+        if supervisor:
+            db.session.delete(supervisor)
+            db.session.commit()
+            return jsonify({"message": "Supervisor has been deleted successfully"}, 201)
+        else:
+            return jsonify({"message": "Supervisor not found"}, 404)
+    except Exception as error:
+        print(error.args)
+        db.session.rollback()
+        return jsonify({"message": f"Error at deleting supervisor {error}"}, 400)
+
+@api.route('/supervisor/<int:id>', methods=["GET"])
+def get_supervisor():
+    form_data = request.form
+    id = form_data.get('id')
+    supervisor = Supervisor()
+    try:
+        supervisor= supervisor.query.filter_by(id = id).first
+        return (supervisor.serialize())
+    except Exception as error:
+        return jsonify({"message": f"Error at finding supervisor{error}"}), 400
+
+@api.route('/supervisor/<int:id>', methods=["PUT"])
+def update_user():
+    form_data = request.form
+    data_files = request.files 
+    #data = request.json
+    
+    name = form_data.get('username')
+    id = form_data.get('id')
+    last_name = form_data.get('last_name')
+    username = form_data.get('username')
+    position = form_data.get('position')
+    mail = form_data.get('mail')
+    adress = form_data.get("adress")
+    phone = form_data.get("phone")
+    identification = form_data.get("identification")
+
+    supervisor = Supervisor()
+    supervisor = supervisor.query.filter_by(id = id).one_or_none()
+    if supervisor is None:
+            return jsonify('Supervisor doesnt exist'), 400
+
+
+    try: 
+        supervisor= update(supervisor).where(id = id).values(
+        name = name,
+        last_name = last_name,
+        username = username,
+        position = position,
+        mail = mail,
+        adress = adress,
+        phone = phone,
+        identification = identification)
+
+        db.session.commit()
+        return jsonify({"message": "Supervisor updated"}), 201
+    except Exception as error:
+        print(error.args)
+        db.session.rollback()
+        return jsonify({"message": f"Error at updating supervisorr {error}"}), 400
