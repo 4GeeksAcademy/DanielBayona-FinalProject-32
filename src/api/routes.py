@@ -240,7 +240,7 @@ def create_issue():
         desc = desc,
         user_id = user_id,
         proof = proof_url,
-        proof_id = proof_id
+        proof_id = proof_id,
     )
 
     try:

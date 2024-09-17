@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 125030290843
+Revision ID: 85ddaa565356
 Revises: 
-Create Date: 2024-09-14 00:48:17.699804
+Create Date: 2024-09-17 02:26:39.892457
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '125030290843'
+revision = '85ddaa565356'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -97,22 +97,24 @@ def upgrade():
     op.create_table('issue',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=50), nullable=False),
-    sa.Column('desc', sa.String(), nullable=False),
-    sa.Column('proof', sa.String(), nullable=False),
-    sa.Column('proof_id', sa.Integer(), nullable=True),
+    sa.Column('desc', sa.String(length=256), nullable=False),
+    sa.Column('proof', sa.String(length=256), nullable=False),
+    sa.Column('proof_id', sa.String(length=256), nullable=False),
     sa.Column('review', sa.String(), nullable=True),
     sa.Column('status', sa.String(), nullable=False),
     sa.Column('admin_id', sa.Integer(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['admin_id'], ['administrator.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
-    sa.PrimaryKeyConstraint('id')
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('proof_id')
     )
     op.create_table('task',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=50), nullable=False),
     sa.Column('desc', sa.String(), nullable=False),
     sa.Column('proof', sa.String(), nullable=False),
+    sa.Column('proof_id', sa.String(), nullable=False),
     sa.Column('review', sa.String(length=254), nullable=True),
     sa.Column('status', sa.String(length=254), nullable=False),
     sa.Column('worker_id', sa.Integer(), nullable=False),

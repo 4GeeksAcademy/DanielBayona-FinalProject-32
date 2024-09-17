@@ -96,8 +96,11 @@ const getState = ({ getStore, getActions, setStore }) => {
 			// CREATE ISSUE
 			createIssue: async (issue) => {
 				try {
-					let response = await fetch(`${process.env.BACKEND_URL}/api/issue`, {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/issue`, {
 						method: 'POST',
+						"headers": {
+							"Authorization": `Bearer ${getStore().token}`
+						},
 						body: issue
 					})
 
@@ -108,8 +111,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return { 'error': 'unexpected error' };
 				}
 			},
-
-
 		}
 
 	}
