@@ -73,7 +73,7 @@ def registerUser():
 @api.route('/user', methods=["GET"])
 def get_users():
     users = User()
-    users = users.query.all
+    users = User().query.all()
     all_users =  list(map(lambda x:x.serialize(), users))
     return jsonify(all_users)
 
@@ -132,19 +132,23 @@ def update_user():
         db.session.rollback()
         return jsonify({"message": f"Error at updating user {error}"}), 400
 
-@api.route('/user/<int:id>', methods=["DELETE"])
+@api.route('/user', methods=["DELETE"])
 def delete_user():
     form_data = request.form
     id = form_data.get('id')
-    user = User()
+
     try:
-        user = delete(user).where(id = id)
-        db.session.commit()
-        return jsonify({"message": "User has been deleted successfully"}, 201)
+        user = User.query.filter_by(id=id).first()
+        if user:
+            db.session.delete(user)
+            db.session.commit()
+            return jsonify({"message": "User has been deleted successfully"}, 201)
+        else:
+            return jsonify({"message": "User not found"}, 404)
     except Exception as error:
         print(error.args)
         db.session.rollback()
-        return jsonify({"message": f"Error at deleting user {error}"}), 400
+        return jsonify({"message": f"Error at deleting user {error}"}, 400)
 
 @api.route('/login', methods=['POST'])
 def login():
@@ -217,13 +221,14 @@ def get_issue():
         return jsonify({"message": f"Error at finding issue{error}"}), 400
 
 @api.route("/issue", methods=["POST"])
+@jwt_required()
 def create_issue():
     form_data = request.form
     data_files = request.files 
     
     name = form_data.get('name')
     desc = form_data.get('desc')
-    user_id= data_files.get('user_id')
+    user_id= get_jwt_identity()
     proof = data_files.get("proof") 
 
     result_cloud = uploader.upload(proof)

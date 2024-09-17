@@ -93,6 +93,21 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return { 'error': 'unexpected error' };
 				}
 			},
+			// CREATE ISSUE
+			createIssue: async (issue) => {
+				try {
+					let response = await fetch(`${process.env.BACKEND_URL}/api/issue`, {
+						method: 'POST',
+						body: issue
+					})
+
+					return response.status
+				}
+				catch (error) {
+					console.log(error);
+					return { 'error': 'unexpected error' };
+				}
+			},
 
 
 		}
