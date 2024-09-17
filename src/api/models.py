@@ -41,7 +41,7 @@ class Worker(db.Model):
     identification = db.Column(db.Integer, nullable=False)
     username = db.Column(db.String(16), db.ForeignKey("user.username"), unique=True,nullable=False)
     username_table = db.relationship("User", backref="worker")
-    performance = db.Column(db.String(254), nullable=False)
+    performance = db.Column(db.Integer, nullable = True)
     def __repr__(self):
         return f'<Worker {self.name} ID: {self.id}>'
 
