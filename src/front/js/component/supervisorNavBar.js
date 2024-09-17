@@ -1,7 +1,6 @@
 import React, { useState, useContext } from "react";
 import { Context } from "../store/appContext";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import Logo from "../../img/Logo.png";
 import "../../styles/supervisorNavBar.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -12,7 +11,7 @@ import {
     faPen,
     faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
-import "../../styles/supervisorNavBar.css";
+import "../../styles/adminNavBar.css";
 
 export const SuperVisorNavBar = () => {
     const navigate = useNavigate()
@@ -75,15 +74,19 @@ export const SuperVisorNavBar = () => {
                             className={`nav-item ${activeItem === 2 ? "active" : ""}`}
                             onClick={() => handleChangeColor(2)}
                         >
-                            <a
-                                className={`nav-link fst-italic fw-bolder ${activeItem === 2 ? "text-white" : "text-dark"
-                                    }`}
-                                aria-current="page"
-                                href="#"
+                            <NavLink
+                                end
+                                className={({ isActive }) =>
+                                    isActive
+                                        ? "nav-link active transition text-white fst-italic fw-bolder"
+                                        : "nav-link inactive transition text-dark fst-italic fw-bolder"
+                                }
+                                to="/supervisor/CreateWorker"
+
                             >
                                 <FontAwesomeIcon icon={faUserGroup} className="pe-2" />
                                 WORKERS
-                            </a>
+                            </NavLink>
                         </li>
                         <li
                             className={`nav-item ${activeItem === 3 ? "active" : ""}`}
