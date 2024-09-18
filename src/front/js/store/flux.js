@@ -15,7 +15,9 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			],
 			token: localStorage.getItem("token") || null,
-			user: localStorage.getItem("user") || null
+			user: localStorage.getItem("user") || null,
+			workers: [],
+
 		},
 		actions: {
 			// Use getActions to call a function within a fuction
@@ -93,8 +95,65 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return { 'error': 'unexpected error' };
 				}
 			},
+			// CREATE ISSUE
+			createIssue: async (issue) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/issue`, {
+						method: 'POST',
+						"headers": {
+							"Authorization": `Bearer ${getStore().token}`
+						},
+						body: issue
+					})
 
+					return response.status
+				}
+				catch (error) {
+					console.log(error);
+					return { 'error': 'unexpected error' };
+				}
+			},
 
+			createWorker: async (worker) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/worker`, {
+						method: 'POST',
+						"headers": {
+							"Authorization": `Bearer ${getStore().token}`,
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify(worker)
+					})
+					return response.status
+				}
+				catch (error) {
+					console.log(error);
+					return { 'error': 'unexpected error' };
+
+				}
+			},
+			getWorkers: async () => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/user/workers`, {
+						method: 'GET',
+						headers: {
+							"Authorization": `Bearer ${getStore().token}`
+						}
+					});
+
+					if (!response.ok) {
+						throw new Error("Failed to fetch workers");
+
+					}
+					const data = await response.json();
+					setStore({ workers: data });
+					return data;
+				}
+				catch (error) {
+					console.log(error);
+					return { 'error': 'unexpected error' };
+				}
+			}
 		}
 
 	}

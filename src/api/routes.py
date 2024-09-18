@@ -2,7 +2,7 @@
 This module takes care of starting the API Server, Loading the DB and Adding the endpoints
 """
 from flask import Flask, request, jsonify, url_for, Blueprint
-from api.models import db, User, Issue
+from api.models import db, User, Issue, Supervisor, Worker
 from sqlalchemy import delete, update
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
@@ -73,15 +73,22 @@ def registerUser():
 @api.route('/user', methods=["GET"])
 def get_users():
     users = User()
-    users = users.query.all
+    users = User().query.all()
     all_users =  list(map(lambda x:x.serialize(), users))
+    return jsonify(all_users)
+
+@api.route('/user/workers', methods=['GET'])
+def get_user_workers():
+    users = User()
+    users = users.query.filter_by(role='worker').all()
+    all_users = list(map(lambda x:x.serialize(), users))
     return jsonify(all_users)
 
 @api.route('/user/<int:id>', methods=["GET"])
 def get_user():
     form_data = request.form
     id = form_data.get('id')
-    user= user()
+    user= User()
     try:
         user= user.query.filter_by(id = id).first
         return (user.serialize())
@@ -132,19 +139,23 @@ def update_user():
         db.session.rollback()
         return jsonify({"message": f"Error at updating user {error}"}), 400
 
-@api.route('/user/<int:id>', methods=["DELETE"])
+@api.route('/user', methods=["DELETE"])
 def delete_user():
     form_data = request.form
     id = form_data.get('id')
-    user = User()
+
     try:
-        user = delete(user).where(id = id)
-        db.session.commit()
-        return jsonify({"message": "User has been deleted successfully"}, 201)
+        user = User.query.filter_by(id=id).first()
+        if user:
+            db.session.delete(user)
+            db.session.commit()
+            return jsonify({"message": "User has been deleted successfully"}, 201)
+        else:
+            return jsonify({"message": "User not found"}, 404)
     except Exception as error:
         print(error.args)
         db.session.rollback()
-        return jsonify({"message": f"Error at deleting user {error}"}), 400
+        return jsonify({"message": f"Error at deleting user {error}"}, 400)
 
 @api.route('/login', methods=['POST'])
 def login():
@@ -217,13 +228,14 @@ def get_issue():
         return jsonify({"message": f"Error at finding issue{error}"}), 400
 
 @api.route("/issue", methods=["POST"])
+@jwt_required()
 def create_issue():
     form_data = request.form
     data_files = request.files 
     
     name = form_data.get('name')
     desc = form_data.get('desc')
-    user_id= data_files.get('user_id')
+    user_id= get_jwt_identity()
     proof = data_files.get("proof") 
 
     result_cloud = uploader.upload(proof)
@@ -235,7 +247,7 @@ def create_issue():
         desc = desc,
         user_id = user_id,
         proof = proof_url,
-        proof_id = proof_id
+        proof_id = proof_id,
     )
 
     try:
@@ -292,3 +304,250 @@ def delete_issue():
         print(error.args)
         db.session.rollback()
         return jsonify({"message": f"Error at deleting issue {error}"}), 400
+
+@api.route('/supervisor', methods=['POST'])
+def createSupervisor():
+    form_data = request.form
+    #data = request.json
+    
+    name = form_data.get('name')
+    last_name = form_data.get('last_name')
+    username = form_data.get('username')
+    position = form_data.get('position')
+    mail = form_data.get('mail')
+    adress = form_data.get("adress")
+    phone = form_data.get("phone")
+    identification = form_data.get("identification")
+    
+    user = User.query.filter_by(username=username, role='supervisor').one_or_none()
+    
+    if user is None:
+        return jsonify({"message": "User with supervisor role not found"}), 400
+
+    supervisor = Supervisor()
+    supervisor = supervisor.query.filter_by(identification = identification).one_or_none()
+    if supervisor is not None:
+        return jsonify('Supervisor already exists'), 400
+
+    
+    supervisor = Supervisor(
+        name = name,
+        last_name = last_name,
+        username=user.username,
+        position = position,
+        mail = mail,
+        adress = adress,
+        phone = phone,
+        identification = identification
+    ) 
+    try:
+        db.session.add(supervisor)
+        db.session.commit()
+        return jsonify({"message": "Supervisor created"}), 201
+    except Exception as error:
+        print(error.args)
+        db.session.rollback()
+        return jsonify({"message": f"Supervisor couldn't be created {error}"}), 400
+
+@api.route('/supervisor', methods=["GET"])
+def get_supervisors():
+    supervisors = Supervisor()
+    supervisors = supervisors.query.all()
+    all_supervisors =  list(map(lambda x:x.serialize(), supervisors))
+    return jsonify(all_supervisors)
+
+@api.route('/supervisor', methods=["DELETE"])
+def delete_supervisor():
+    form_data = request.form
+    id = form_data.get('id')
+
+    try:
+        supervisor= Supervisor.query.filter_by(id=id).first()
+        if supervisor:
+            db.session.delete(supervisor)
+            db.session.commit()
+            return jsonify({"message": "Supervisor has been deleted successfully"}, 201)
+        else:
+            return jsonify({"message": "Supervisor not found"}, 404)
+    except Exception as error:
+        print(error.args)
+        db.session.rollback()
+        return jsonify({"message": f"Error at deleting supervisor {error}"}, 400)
+
+@api.route('/supervisor/<int:id>', methods=["GET"])
+def get_supervisor():
+    form_data = request.form
+    id = form_data.get('id')
+    supervisor = Supervisor()
+    try:
+        supervisor= supervisor.query.filter_by(id = id).first
+        return (supervisor.serialize())
+    except Exception as error:
+        return jsonify({"message": f"Error at finding supervisor{error}"}), 400
+  
+    
+
+@api.route('/supervisor/<int:id>', methods=["PUT"])
+def update_supervisor():
+    form_data = request.form
+    data_files = request.files 
+    #data = request.json
+    
+    name = form_data.get('username')
+    id = form_data.get('id')
+    last_name = form_data.get('last_name')
+    username = form_data.get('username')
+    position = form_data.get('position')
+    mail = form_data.get('mail')
+    adress = form_data.get("adress")
+    phone = form_data.get("phone")
+    identification = form_data.get("identification")
+
+    supervisor = Supervisor()
+    supervisor = supervisor.query.filter_by(id = id).one_or_none()
+    if supervisor is None:
+            return jsonify('Supervisor doesnt exist'), 400
+
+
+    try: 
+        supervisor= update(supervisor).where(id = id).values(
+        name = name,
+        last_name = last_name,
+        username = username,
+        position = position,
+        mail = mail,
+        adress = adress,
+        phone = phone,
+        identification = identification)
+
+        db.session.commit()
+        return jsonify({"message": "Supervisor updated"}), 201
+    except Exception as error:
+        print(error.args)
+        db.session.rollback()
+        return jsonify({"message": f"Error at updating supervisorr {error}"}), 400
+    
+      
+@api.route('/worker', methods=["POST"])
+def create_worker():
+    form_data = request.json
+    print(form_data)
+    
+    name = form_data.get('name')
+    last_name = form_data.get('last_name')
+    position = form_data.get('position')
+    mail = form_data.get('mail')
+    phone = form_data.get('phone')
+    adress = form_data.get('adress')
+    identification = form_data.get('identification')
+    username = form_data.get('username')
+    
+    user = User()
+    user = user.query.filter_by(username=username, role ='worker').one_or_none()
+    
+    if user is None:
+        return jsonify({'Message': 'Username with worker role not found'}), 400
+    
+    worker = Worker()
+    worker = worker.query.filter_by(identification=identification).one_or_none()
+    
+    if worker is not None:
+        return jsonify({"Message": "Worker already exists"}),400
+    
+    worker = Worker(
+       name = name,
+       last_name = last_name,
+       position = position,
+       mail = mail,
+       phone = phone,
+       adress = adress,
+       identification = identification,
+       username = user.username 
+    )
+    
+    try:
+        db.session.add(worker)
+        db.session.commit()
+        return jsonify({'Message': 'Worker added succesfully'}), 201
+    except Exception as error:
+        print(error.args)
+        db.session.rollback()
+        return jsonify({"message": f"Worker couldn't be created {error}"}), 400
+    
+@api.route('/worker/<int:id>', methods=['GET'])
+def get_worker(id):
+    try:
+        worker = Worker.query.filter_by(id=id).first() 
+        if worker:
+            return jsonify(worker.serialize())
+        else:
+            return jsonify({'Message': 'Worker not found'}), 404
+    except Exception as error:
+        print(error.args)
+        return jsonify({'Message': f"Error finding Worker: {error}"}), 500
+    
+@api.route('/workers', methods=["GET"])
+def get_workers():
+    workers = Worker()
+    workers = workers.query.all()
+    all_workers = list(map(lambda x:x.serialize(), workers))
+    return jsonify(all_workers)
+
+@api.route('/worker/<int:id>', methods=["DELETE"])
+def delete_worker(id):
+    worker = Worker()
+    try:
+        worker = worker.query.filter_by(id=id).first()
+        if worker:
+            db.session.delete(worker)
+            db.session.commit()
+            return jsonify({'message': 'Worker has been deleted successfully'}), 200
+        else:
+            return jsonify({'message': 'Worker not found'}), 404
+    except Exception as error:
+        print(error.args)
+        return jsonify({'message': f'Error deleting Worker: {error}'}),400
+
+@api.route('/worker/<int:id>', methods=["PUT"])
+def update_worker(id):
+    form_data = request.form
+    
+
+    name = form_data.get('name')
+    last_name = form_data.get('last_name')
+    position = form_data.get('position')
+    mail = form_data.get('mail')
+    phone = form_data.get('phone')
+    adress = form_data.get('adress')
+    identification = form_data.get('identification')
+    
+  
+    worker = Worker.query.filter_by(id=id).one_or_none()
+    
+    if worker is None:
+        return jsonify({"Message": "Worker doesn't exist"}), 404
+
+    
+    if name is not None:
+        worker.name = name
+    if last_name is not None:
+        worker.last_name = last_name
+    if position is not None:
+        worker.position = position
+    if mail is not None:
+        worker.mail = mail
+    if phone is not None:
+        worker.phone = phone
+    if adress is not None:
+        worker.adress = adress
+    if identification is not None:
+        worker.identification = identification
+
+    try:
+        db.session.commit()
+        return jsonify({"message": "Worker updated successfully"}), 200
+    except Exception as error:
+        print(error.args)
+        db.session.rollback()
+        return jsonify({"message": f"Error updating Worker: {error}"}), 400
+      

@@ -26,7 +26,7 @@ class User(db.Model):
         return {
             "id": self.id,
             "username": self.username,
-            "role" : self.role
+            "role" : self.role.value
             # do not serialize the password, its a security breach
         }
 
@@ -41,7 +41,22 @@ class Worker(db.Model):
     identification = db.Column(db.Integer, nullable=False)
     username = db.Column(db.String(16), db.ForeignKey("user.username"), unique=True,nullable=False)
     username_table = db.relationship("User", backref="worker")
-    performance = db.Column(db.String(254), nullable=False)
+    performance = db.Column(db.Integer, nullable = True)
+    def __repr__(self):
+        return f'<Worker {self.name} ID: {self.id}>'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "last_name": self.last_name,
+            "username": self.username,
+            "position": self.position,
+            "mail" : self.mail,
+            "adress" : self.adress,
+            "phone" : self.phone,
+            "identification" : self.identification
+        }
 
 class Supervisor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -54,6 +69,21 @@ class Supervisor(db.Model):
     identification = db.Column(db.Integer, nullable=False)
     username = db.Column(db.String(16), db.ForeignKey("user.username"), unique=True,nullable=False)
     username_table = db.relationship("User", backref="supervisor")
+    def __repr__(self):
+        return f'<Supervisor {self.name} ID: {self.id}>'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "last_name": self.last_name,
+            "username": self.username,
+            "position": self.position,
+            "mail" : self.mail,
+            "adress" : self.adress,
+            "phone" : self.phone,
+            "identification" : self.identification
+        }
 
 class Administrator(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -74,30 +104,69 @@ class Company(db.Model):
     phone = db.Column(db.Integer, nullable=False, unique=True)
     adress = db.Column(db.String(254), nullable=False)
     identification = db.Column(db.Integer, nullable=False)
+    def __repr__(self):
+        return f'<Company {self.name} ID: {self.id}>'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "mail" : self.mail,
+            "adress" : self.adress,
+            "phone" : self.phone,
+            "identification" : self.identification
+        }
 
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name= db.Column(db.String(50), nullable=False)
+    work = db.Column(db.String(256))
+    work_id = db.Column(db.String(256))
     desc= db.Column(db.String, nullable=False)
-    proof = db.Column(db.String, nullable=False)
     review = db.Column(db.String(254))
-    status = db.Column(db.String(254), nullable=False)
+    status = db.Column(db.String(254), nullable=False, default="To be reviewed")
     worker_id = db.Column(db.Integer, db.ForeignKey("worker.id"), nullable=False)
     worker_table = db.relationship("Worker", backref="task")
-    supervisor_id = db.Column(db.Integer, db.ForeignKey("supervisor.id"), nullable=False)
+    supervisor_id = db.Column(db.Integer, db.ForeignKey("supervisor.id"))
     supervisor_table = db.relationship("Supervisor", backref="task")
     company = db.Column(db.Integer, db.ForeignKey("company.id"), nullable=False, unique=True)
     company_table = db.relationship("Company", backref="task")
 
+    def __repr__(self):
+        return f'<Task: {self.name} ID: {self.id}>'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "desc" : self.desc,
+            "worker_id" : self.worker_id,
+            "status" : self.status
+        }
+
 class Issue(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name= db.Column(db.String(50), nullable=False)
-    desc= db.Column(db.String, nullable=False)
-    proof = db.Column(db.String, nullable=False)
-    proof_id = db.Column(db.Integer)
+    desc= db.Column(db.String(256), nullable=False)
+    proof = db.Column(db.String(256), nullable=False)
+    proof_id = db.Column(db.String(256), unique=True, nullable=False)
     review = db.Column(db.String)
     status = db.Column(db.String, nullable=False, default="To Review")
-    admin_id = db.Column(db.Integer, db.ForeignKey("administrator.id"))
+    admin_id = db.Column(db.Integer, db.ForeignKey("administrator.id"), default=1)
     administrator_table = db.relationship("Administrator", backref="issue") 
     user_id =  db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     user_table = db.relationship("User", backref="issue")
+
+    def __repr__(self):
+        return f'<Issue: {self.name} ID: {self.id}>'
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "desc" : self.desc,
+            "user_id" : self.user_id,
+            "proof" : self.proof,
+            "proof_id" : self.proof_id,
+            "status" : self.status
+        }

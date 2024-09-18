@@ -1,19 +1,10 @@
 import React, { useContext } from "react";
 import { Context } from "../store/appContext.js";
 import { Navigate } from "react-router-dom";
-import Sidebar from "../component/Sidebar.jsx";
+import SuperVisorNavBar from "../component/supervisorNavBar.js";
+import CreateWorker from "../component/createWorker.jsx";
 
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBell,
-  faUser,
-
-} from "@fortawesome/free-solid-svg-icons";
-
-
-
-const AdminCreateIssue = () => {
+const SupervisorCreateWorker = () => {
   const { store, actions } = useContext(Context);
   return (
     <>
@@ -21,12 +12,12 @@ const AdminCreateIssue = () => {
         <Navigate to={"/"} />
       ) : (
         <>
-          <Sidebar />
-          <CreateIssue />
+          <SuperVisorNavBar />
+          <CreateWorker />
         </>
       )}
     </>
   );
 };
 
-export default AdminCreateIssue;
+export default SupervisorCreateWorker;
