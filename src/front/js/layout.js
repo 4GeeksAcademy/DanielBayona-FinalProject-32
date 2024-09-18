@@ -14,7 +14,8 @@ import AdminCreateIssue from "./pages/adminCreateIssue.jsx";
 
 
 import injectContext from "./store/appContext";
-
+import AdminUsers from "./component/AdminUsers.jsx";
+import AdminGetUsers from "./pages/AdminGetUsers.jsx";
 //create your first component
 const Layout = () => {
     //the basename is used when your project is published in a subdirectory and not in the root of the domain
@@ -37,6 +38,8 @@ const Layout = () => {
                         <Route path="/worker" element={<Worker />} />
                         <Route path="/admin/CreateUser" element={<AdminCreateUser />} />
                         <Route path="/admin/CreateIssue" element={<AdminCreateIssue />} />
+                        <Route path="/admin/AdminUsers" element={<AdminGetUsers />} />
+
                     </Routes>
                 </ScrollToTop>
             </BrowserRouter>

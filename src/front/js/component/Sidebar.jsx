@@ -8,6 +8,8 @@ import {
   faRightFromBracket,
   faBug,
   faUsers,
+  faUser
+  
 } from "@fortawesome/free-solid-svg-icons";
 import "../../styles/supervisorNavBar.css";
 
@@ -67,6 +69,19 @@ export const Sidebar = () => {
             </li>
             <li>
               <NavLink
+                end
+                className={({ isActive }) =>
+                  isActive
+                    ? "nav-link active transition  text-white fst-italic fw-bolder"
+                    : "nav-link inactive transition  text-dark fst-italic fw-bolder"
+                }
+                to="/admin/AdminUsers"
+              >
+                <FontAwesomeIcon icon={faUsers} className="pe-2" /> USERS
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
                 className={({ isActive }) =>
                   isActive
                     ? "nav-link active transition  text-white fst-italic fw-bolder"
@@ -74,7 +89,7 @@ export const Sidebar = () => {
                 }
                 to="/admin/CreateUser"
               >
-                <FontAwesomeIcon icon={faUsers} className="pe-2" />
+                <FontAwesomeIcon icon={faUser} className="pe-2" />
                 CREATE USER
               </NavLink>
             </li>
