@@ -30,8 +30,8 @@ const AdminUsers = () => {
 
             </div>
             <section style={{ width: "80%", margin: "auto" }} >
-                <table style={{ width: "100%" }}>
-                    <tr className="mb-4" style={{ backgroundColor: "#edf1d6" }} >
+                <table style={{ width: "100%",borderSpacing:"30px"}}>
+                    <tr  className="mb-4" style={{ backgroundColor: "#edf1d6"}} >
                         <th style={{ width: "80%" }}>Usuarios</th>
                         <th>
                             Info
@@ -77,8 +77,8 @@ const AdminUsers = () => {
                                             </table>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                            <button type="button" class="btn btn-primary">Save changes</button>
+                                            <button type="button" class="btn btn-taskyist" data-bs-dismiss="modal">Close</button>
+                                           
                                         </div>
                                     </div>
                                 </div>
@@ -92,7 +92,6 @@ const AdminUsers = () => {
                             <FontAwesomeIcon icon={faTrash} />
                         </td>
                     </tr>
-
                 </table>
             </section>
         </div>

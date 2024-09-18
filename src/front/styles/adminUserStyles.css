@@ -20,3 +20,8 @@ tr:nth-child(odd) {
 }
 
 tr:hover {background-color: #a5c894;}
+
+.btn-taskyist {
+    background-color: #a5c894;
+    color:#fff;
+}
