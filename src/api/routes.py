@@ -77,6 +77,13 @@ def get_users():
     all_users =  list(map(lambda x:x.serialize(), users))
     return jsonify(all_users)
 
+@api.route('/user/workers', methods=['GET'])
+def get_user_workers():
+    users = User()
+    users = users.query.filter_by(role='worker').all()
+    all_users = list(map(lambda x:x.serialize(), users))
+    return jsonify(all_users)
+
 @api.route('/user/<int:id>', methods=["GET"])
 def get_user():
     form_data = request.form
@@ -423,7 +430,8 @@ def update_supervisor():
       
 @api.route('/worker', methods=["POST"])
 def create_worker():
-    form_data = request.form
+    form_data = request.json
+    print(form_data)
     
     name = form_data.get('name')
     last_name = form_data.get('last_name')

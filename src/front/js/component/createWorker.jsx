@@ -1,58 +1,85 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 import Logo from "../../img/Logo.png";
 import Swal from "sweetalert2";
 
 const initialState = {
+  name: "",
+  last_name: "",
+  mail: "",
+  adress: "",
+  phone: "",
+  position: "",
+  identification: "",
   username: "",
-  password: "",
-  pic: "",
-  role: "worker",
 };
 
 const CreateWorkerForm = () => {
   const { store, actions } = useContext(Context);
   const [user, setUser] = useState(initialState);
-  const [picPreview, setPicPreview] = useState("");
+
+  useEffect(() => {
+    actions.getWorkers();
+  }, []);
 
   const handleChange = (event) => {
-    const { name, value, files } = event.target;
-    if (name === "pic") {
-      const file = files[0];
-      setUser({
-        ...user,
-        pic: file,
-      });
-      setPicPreview(URL.createObjectURL(file));
-    } else {
-      setUser({
-        ...user,
-        [name]: value,
-      });
-    }
+    const { name, value } = event.target;
+    setUser({
+      ...user,
+      [name]: value,
+    });
   };
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    const formData = new FormData();
-    formData.append("username", user.username);
-    formData.append("password", user.password);
-    formData.append("role", user.role);
-    formData.append("pic", user.pic);
+    const response = actions.createWorker({
+      name: user.name,
+      last_name: user.last_name,
+      mail: user.mail,
+      adress: user.adress,
+      phone: user.phone,
+      position: user.position,
+      identification: user.identification,
+      username: user.username,
+    });
 
-    const response = actions.register(formData);
-    console.log("sirvo");
+    const validatePhone = (phone) => {
+      const phonePattern = /^\d{10}$/;
+      return phonePattern.test(phone);
+    };
+
+    if (!validatePhone(user.phone)) {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Phone Number",
+        text: "Please enter a valid phone number with exactly 10 digits.",
+      });
+      return;
+    }
+
+    const validateIdentification = (identification) => {
+      const idPattern = /^[0-9]+$/;
+      return idPattern.test(identification);
+    };
+
+    if (!validateIdentification(user.identification)) {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid Identification",
+        text: "Identification must contain only numbers.",
+      });
+      return;
+    }
 
     response.then((res) => {
       if (res == 201) {
         setUser(initialState);
-        setPicPreview("");
         Swal.fire({
           position: "center",
           icon: "success",
-          title: "User created successfully",
+          title: "Worker created successfully",
           showConfirmButton: false,
           timer: 1500,
         });
@@ -60,13 +87,13 @@ const CreateWorkerForm = () => {
         Swal.fire({
           icon: "error",
           title: "Oops...",
-          text: "The user already exists",
+          text: "The worker already exists",
         });
       } else {
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: "There was an error while creating the user. Please contact the admin.",
+          text: "Phone number and identifiaction must be numbers",
         });
       }
     });
@@ -95,23 +122,6 @@ const CreateWorkerForm = () => {
           boxShadow: "0px 4px 6px rgba(0, 0, 0, 0.1)",
         }}
       >
-        <div style={{ textAlign: "center" }}>
-          <label htmlFor="pic-upload" style={{ cursor: "pointer" }}>
-            <img
-              src={picPreview || require("../../img/Imagen1user.png").default}
-              alt="User Image"
-              style={{ width: "120px", height: "120px", borderRadius: "50%" }}
-            />
-            <input
-              id="pic-upload"
-              type="file"
-              name="pic"
-              accept="image/*"
-              onChange={handleChange}
-              style={{ display: "none" }}
-            />
-          </label>
-        </div>
         <div className="container mt-3">
           <label
             style={{
@@ -120,12 +130,12 @@ const CreateWorkerForm = () => {
               marginBottom: "10px",
             }}
           >
-            Username:
+            Name:
             <input
-              name="username"
+              name="name"
               type="text"
               className="form-control"
-              value={user.username}
+              value={user.name}
               onChange={handleChange}
             />
           </label>
@@ -136,12 +146,12 @@ const CreateWorkerForm = () => {
               marginBottom: "10px",
             }}
           >
-            Password:
+            Last Name:
             <input
-              name="password"
-              type="password"
+              name="last_name"
+              type="text"
               className="form-control"
-              value={user.password}
+              value={user.last_name}
               onChange={handleChange}
             />
           </label>
@@ -152,15 +162,100 @@ const CreateWorkerForm = () => {
               marginBottom: "10px",
             }}
           >
-            Role:
+            Mail:
+            <input
+              name="mail"
+              type="text"
+              className="form-control"
+              value={user.mail}
+              onChange={handleChange}
+            />
+          </label>
+          <label
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              marginBottom: "10px",
+            }}
+          >
+            Address:
+            <input
+              name="adress"
+              type="text"
+              className="form-control"
+              value={user.adress}
+              onChange={handleChange}
+            />
+          </label>
+          <label
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              marginBottom: "10px",
+            }}
+          >
+            Phone:
+            <input
+              name="phone"
+              type="text"
+              className="form-control"
+              value={user.phone}
+              onChange={handleChange}
+            />
+          </label>
+          <label
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              marginBottom: "10px",
+            }}
+          >
+            Position:
+            <input
+              name="position"
+              type="text"
+              className="form-control"
+              value={user.position}
+              onChange={handleChange}
+            />
+          </label>
+          <label
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              marginBottom: "10px",
+            }}
+          >
+            Identification:
+            <input
+              name="identification"
+              type="text"
+              className="form-control"
+              value={user.identification}
+              onChange={handleChange}
+            />
+          </label>
+          <label
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              marginBottom: "10px",
+            }}
+          >
+            Username:
             <select
-              name="role"
+              name="username"
               className="form-select"
               style={{ backgroundColor: "#A5C894" }}
-              value={user.role}
+              value={user.username}
               onChange={handleChange}
             >
-              <option value="worker">Worker</option>
+              <option value="">Select worker</option>
+              {store.workers.map((worker, index) => (
+                <option key={index} value={worker.username}>
+                  {worker.username}
+                </option>
+              ))}
             </select>
           </label>
         </div>
