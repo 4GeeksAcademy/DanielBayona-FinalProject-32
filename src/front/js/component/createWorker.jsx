@@ -1,8 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
-import { useNavigate } from "react-router-dom";
-import Logo from "../../img/Logo.png";
 import Swal from "sweetalert2";
+import Logo from "../../img/Logo.png";
 
 const initialState = {
   name: "",
@@ -20,7 +19,10 @@ const CreateWorkerForm = () => {
   const [user, setUser] = useState(initialState);
 
   useEffect(() => {
-    actions.getWorkers();
+    const fetchWorkers = async () => {
+      await actions.getWorkers();
+    };
+    fetchWorkers();
   }, []);
 
   const handleChange = (event) => {
@@ -75,6 +77,7 @@ const CreateWorkerForm = () => {
 
     response.then((res) => {
       if (res == 201) {
+        actions.assignWorker(us);
         setUser(initialState);
         Swal.fire({
           position: "center",
@@ -93,7 +96,7 @@ const CreateWorkerForm = () => {
         Swal.fire({
           icon: "error",
           title: "Error",
-          text: "Phone number and identifiaction must be numbers",
+          text: "Phone number and identification must be numbers",
         });
       }
     });
@@ -251,11 +254,13 @@ const CreateWorkerForm = () => {
               onChange={handleChange}
             >
               <option value="">Select worker</option>
-              {store.workers.map((worker, index) => (
-                <option key={index} value={worker.username}>
-                  {worker.username}
-                </option>
-              ))}
+              {store.workers
+                .filter((worker) => !worker.is_assigned)
+                .map((worker, index) => (
+                  <option key={index} value={worker.id}>
+                    {worker.username}
+                  </option>
+                ))}
             </select>
           </label>
         </div>

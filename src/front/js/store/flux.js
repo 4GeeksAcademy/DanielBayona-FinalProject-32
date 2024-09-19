@@ -153,7 +153,33 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error);
 					return { 'error': 'unexpected error' };
 				}
+			},
+
+			assignWorker: async (userId) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/user/assign/${userId}`, {
+						method: 'PUT',
+						headers: {
+							"Authorization": `Bearer ${getStore().token}`,
+							"Content-Type": "application/json"
+						}
+					});
+
+					if (!response.ok) {
+						throw new Error("Failed to assign worker");
+					}
+
+					const data = await response.json();
+					if (response.status === 200) {
+						console.log(data.message);
+						await actions.getWorkers();
+					}
+				} catch (error) {
+					console.log(error);
+				}
 			}
+
+
 		}
 
 	}

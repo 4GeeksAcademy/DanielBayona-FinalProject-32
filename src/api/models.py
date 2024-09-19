@@ -18,6 +18,7 @@ class User(db.Model):
     pic_id = db.Column(db.String(256), unique=True, nullable=False)
     role = db.Column(Enum(roleEnum), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False, default=False)
+    is_assigned = db.Column(db.Boolean(), unique = False, nullable = False, default = False)
 
     def __repr__(self):
         return f'<User {self.username}>'
@@ -26,7 +27,8 @@ class User(db.Model):
         return {
             "id": self.id,
             "username": self.username,
-            "role" : self.role.value
+            "role" : self.role.value,
+            "is_assigned": self.is_assigned
             # do not serialize the password, its a security breach
         }
 
