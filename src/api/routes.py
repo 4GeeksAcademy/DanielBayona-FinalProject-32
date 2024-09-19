@@ -79,10 +79,19 @@ def get_users():
 
 @api.route('/user/workers', methods=['GET'])
 def get_user_workers():
-    users = User()
-    users = users.query.filter_by(role='worker').all()
-    all_users = list(map(lambda x:x.serialize(), users))
+    users = User.query.filter_by(role='worker', is_assigned=False).all()
+    all_users = list(map(lambda x: x.serialize(), users))
     return jsonify(all_users)
+
+@api.route('/user/assign/<int:user_id>', methods=['PUT'])
+def assign_worker(user_id):
+    user = User.query.get(user_id)
+    if user:
+        user.is_assigned = True
+        db.session.commit()
+        return jsonify({"message": "User assigned successfully"}), 200
+    return jsonify({"error": "User not found"}), 404
+
 
 @api.route('/user/<int:id>', methods=["GET"])
 def get_user():
