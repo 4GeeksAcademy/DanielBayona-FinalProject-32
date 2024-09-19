@@ -40,6 +40,7 @@ class Worker(db.Model):
     adress = db.Column(db.String(254), nullable=False)
     identification = db.Column(db.Integer, nullable=False)
     username = db.Column(db.String(16), db.ForeignKey("user.username"), unique=True,nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     username_table = db.relationship("User", backref="worker")
     performance = db.Column(db.Integer, nullable = True)
     def __repr__(self):
@@ -68,6 +69,7 @@ class Supervisor(db.Model):
     adress = db.Column(db.String(254), nullable=False)
     identification = db.Column(db.Integer, nullable=False)
     username = db.Column(db.String(16), db.ForeignKey("user.username"), unique=True,nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     username_table = db.relationship("User", backref="supervisor")
     def __repr__(self):
         return f'<Supervisor {self.name} ID: {self.id}>'
@@ -125,7 +127,7 @@ class Task(db.Model):
     desc= db.Column(db.String, nullable=False)
     review = db.Column(db.String(254))
     status = db.Column(db.String(254), nullable=False, default="To be reviewed")
-    worker_id = db.Column(db.Integer, db.ForeignKey("worker.id"), nullable=False)
+    worker_id = db.Column(db.Integer, db.ForeignKey("worker.id"))
     worker_table = db.relationship("Worker", backref="task")
     supervisor_id = db.Column(db.Integer, db.ForeignKey("supervisor.id"))
     supervisor_table = db.relationship("Supervisor", backref="task")
