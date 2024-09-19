@@ -99,6 +99,20 @@ export default function Sidebar() {
                   CREATE USER
                 </NavLink>
               </li>
+              <li className="small-text">
+                <NavLink
+                  className={({ isActive }) =>
+                    isActive
+                      ? "nav-link active transition text-white fst-italic fw-bolder"
+                      : "nav-link inactive transition text-dark fst-italic fw-bolder"
+                  }
+                  to="/admin/CreateSupervisor"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <FontAwesomeIcon icon={faUsers} className="pe-2" />
+                  CREATE SUPERVISOR
+                </NavLink>
+              </li>
               <li className="nav-item bottom-item small-text">
                 <a
                   className="nav-link text-dark fst-italic fw-bolder"

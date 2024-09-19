@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: 4706b9a04cba
+Revision ID: 63f4817bc038
 Revises: 
-Create Date: 2024-09-19 01:45:29.394298
+Create Date: 2024-09-19 21:53:17.129784
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '4706b9a04cba'
+revision = '63f4817bc038'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -71,12 +71,11 @@ def upgrade():
     sa.Column('phone', sa.Integer(), nullable=False),
     sa.Column('adress', sa.String(length=254), nullable=False),
     sa.Column('identification', sa.Integer(), nullable=False),
-    sa.Column('username', sa.String(length=16), nullable=False),
-    sa.ForeignKeyConstraint(['username'], ['user.username'], ),
+    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('mail'),
-    sa.UniqueConstraint('phone'),
-    sa.UniqueConstraint('username')
+    sa.UniqueConstraint('phone')
     )
     op.create_table('worker',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -87,13 +86,12 @@ def upgrade():
     sa.Column('phone', sa.Integer(), nullable=False),
     sa.Column('adress', sa.String(length=254), nullable=False),
     sa.Column('identification', sa.Integer(), nullable=False),
-    sa.Column('username', sa.String(length=16), nullable=False),
+    sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('performance', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['username'], ['user.username'], ),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('mail'),
-    sa.UniqueConstraint('phone'),
-    sa.UniqueConstraint('username')
+    sa.UniqueConstraint('phone')
     )
     op.create_table('issue',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -118,7 +116,7 @@ def upgrade():
     sa.Column('desc', sa.String(), nullable=False),
     sa.Column('review', sa.String(length=254), nullable=True),
     sa.Column('status', sa.String(length=254), nullable=False),
-    sa.Column('worker_id', sa.Integer(), nullable=False),
+    sa.Column('worker_id', sa.Integer(), nullable=True),
     sa.Column('supervisor_id', sa.Integer(), nullable=True),
     sa.Column('company', sa.Integer(), nullable=False),
     sa.ForeignKeyConstraint(['company'], ['company.id'], ),
