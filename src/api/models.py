@@ -41,10 +41,9 @@ class Worker(db.Model):
     phone = db.Column(db.Integer, nullable=False, unique=True)
     adress = db.Column(db.String(254), nullable=False)
     identification = db.Column(db.Integer, nullable=False)
-    username = db.Column(db.String(16), db.ForeignKey("user.username"), unique=True,nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-    username_table = db.relationship("User", backref="worker")
-    performance = db.Column(db.Integer, nullable = True)
+    user = db.relationship("User", backref="worker")
+    performance = db.Column(db.Integer, nullable = True)    
     def __repr__(self):
         return f'<Worker {self.name} ID: {self.id}>'
 
@@ -53,7 +52,7 @@ class Worker(db.Model):
             "id": self.id,
             "name": self.name,
             "last_name": self.last_name,
-            "username": self.username,
+            "username": self.user.username,
             "position": self.position,
             "mail" : self.mail,
             "adress" : self.adress,
@@ -70,9 +69,8 @@ class Supervisor(db.Model):
     phone = db.Column(db.Integer, nullable=False, unique=True)
     adress = db.Column(db.String(254), nullable=False)
     identification = db.Column(db.Integer, nullable=False)
-    username = db.Column(db.String(16), db.ForeignKey("user.username"), unique=True,nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-    username_table = db.relationship("User", backref="supervisor")
+    user = db.relationship("User", backref="supervisor")
     def __repr__(self):
         return f'<Supervisor {self.name} ID: {self.id}>'
 
@@ -81,7 +79,7 @@ class Supervisor(db.Model):
             "id": self.id,
             "name": self.name,
             "last_name": self.last_name,
-            "username": self.username,
+            "username": self.user.username,
             "position": self.position,
             "mail" : self.mail,
             "adress" : self.adress,
@@ -99,7 +97,7 @@ class Administrator(db.Model):
     adress = db.Column(db.String(254), nullable=False)
     identification = db.Column(db.Integer, nullable=False)
     username = db.Column(db.String(16), db.ForeignKey("user.username"), unique=True,nullable=False)
-    username_table = db.relationship("User", backref="administrator")
+    user = db.relationship("User", backref="administrator")
 
 class Company(db.Model):
     id = db.Column(db.Integer, primary_key=True)
