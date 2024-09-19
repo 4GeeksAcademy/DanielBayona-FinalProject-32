@@ -70,7 +70,7 @@ class Supervisor(db.Model):
     identification = db.Column(db.Integer, nullable=False)
     username = db.Column(db.String(16), db.ForeignKey("user.username"), unique=True,nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-    username_table = db.relationship("User", backref="supervisor")
+    user_table = db.relationship("User", backref="supervisor")
     def __repr__(self):
         return f'<Supervisor {self.name} ID: {self.id}>'
 
@@ -97,7 +97,7 @@ class Administrator(db.Model):
     adress = db.Column(db.String(254), nullable=False)
     identification = db.Column(db.Integer, nullable=False)
     username = db.Column(db.String(16), db.ForeignKey("user.username"), unique=True,nullable=False)
-    username_table = db.relationship("User", backref="administrator")
+    user_table = db.relationship("User", backref="administrator")
 
 class Company(db.Model):
     id = db.Column(db.Integer, primary_key=True)
