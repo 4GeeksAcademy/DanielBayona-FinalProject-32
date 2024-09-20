@@ -1,0 +1,27 @@
+.container-admin { 
+    background-color: white;
+    height: 100vh;
+}
+p {
+    margin: 0;
+}
+
+.table-user {
+    background-color:#edf1d6;
+    width: 100%;
+}
+table, th, td {
+  border-collapse: collapse;
+  padding: 10px;
+}
+
+tr:nth-child(odd) {
+    background-color: rgba(83, 83, 83, 0.122);
+}
+
+tr:hover {background-color: #a5c894;}
+
+.btn-taskyist {
+    background-color: #a5c894;
+    color:#fff;
+}

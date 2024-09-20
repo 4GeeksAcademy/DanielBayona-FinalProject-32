@@ -1,6 +1,6 @@
 .nav-bar-left {
   background-color: #a5c894;
-  position: fixed;
+  position: relative;
   top: 0;
   left: 0;
   height: 100vh;
