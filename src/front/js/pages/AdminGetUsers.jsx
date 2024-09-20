@@ -8,17 +8,14 @@ const AdminGetUsers = () => {
   const { store, actions } = useContext(Context);
   return (
     <>
-      {/* {store.token == null ? (
+      {store.token == null ? (
         <Navigate to={"/"} />
       ) : (
         <>
           <Sidebar />
           <AdminUsers />
         </>
-      )} */}
-
-      <Sidebar />
-      <AdminUsers />
+      )}
     </>
   );
 };
