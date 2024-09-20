@@ -240,6 +240,22 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error);
 
 				}
+			},
+			createCompany: async (company) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/company`, {
+						method: 'POST',
+						"headers": {
+							"Authorization": `Bearer ${getStore().token}`,
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify(company)
+					})
+					return response.status
+				} catch (error) {
+					console.log(error);
+					return { 'error': 'error while creating company' }
+				}
 			}
 
 
