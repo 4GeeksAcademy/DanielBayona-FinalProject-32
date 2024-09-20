@@ -17,7 +17,6 @@ import AdminCreateSupervisor from "./pages/adminCreateSupervisor.jsx";
 
 
 import injectContext from "./store/appContext";
-import AdminUsers from "./component/AdminUsers.jsx";
 import AdminGetUsers from "./pages/AdminGetUsers.jsx";
 //create your first component
 const Layout = () => {
@@ -36,12 +35,11 @@ const Layout = () => {
                     <Routes>
                         <Route path="/" element={<Login />} />
                         <Route path="/login" element={<Login />} />
-                        <Route path="/admin" element={<Admin />} />
+                        <Route path="/admin" element={<AdminGetUsers />} />
                         <Route path="/supervisor" element={<Supervisor />} />
                         <Route path="/worker" element={<Worker />} />
                         <Route path="/admin/CreateUser" element={<AdminCreateUser />} />
                         <Route path="/admin/CreateIssue" element={<AdminCreateIssue />} />
-                        <Route path="/admin/AdminUsers" element={<AdminGetUsers />} />
                         <Route path="/supervisor/CreateWorker" element={<SupervisorCreateWorker />} />
                         <Route path="/admin/CreateSupervisor" element={<AdminCreateSupervisor />} />
                         <Route path="/supervisor/CreateCompany" element={<SupervisorCreateCompany />} />
