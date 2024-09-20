@@ -17,6 +17,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 			token: localStorage.getItem("token") || null,
 			user: localStorage.getItem("user") || null,
 			workers: [],
+			supervisors: []
 
 		},
 		actions: {
@@ -153,7 +154,95 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error);
 					return { 'error': 'unexpected error' };
 				}
+			},
+
+			assignWorker: async (id) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/user/assign/${id}`, {
+						method: 'PUT',
+						headers: {
+							"Authorization": `Bearer ${getStore().token}`,
+							"Content-Type": "application/json"
+						}
+					});
+
+					if (!response.ok) {
+						throw new Error("Failed to assign worker");
+					}
+
+					const data = await response.json();
+					if (response.status === 200) {
+						console.log(data.message);
+						await actions.getWorkers();
+					}
+				} catch (error) {
+					console.log(error);
+				}
+			},
+			createSupervisor: async (supervisor) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/supervisor`, {
+						method: 'POST',
+						"headers": {
+							"Authorization": `Bearer ${getStore().token}`,
+							'Content-Type': 'application/json'
+						},
+						body: JSON.stringify(supervisor)
+					})
+					return response.status
+				}
+				catch (error) {
+					console.log(error);
+					return { 'error': 'unexpected error' };
+
+				}
+			},
+			getSupervisors: async () => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/user/supervisors`, {
+						method: 'GET',
+						headers: {
+							"Authorization": `Bearer ${getStore().token}`
+						}
+					});
+
+					if (!response.ok) {
+						throw new Error("Failed to fetch supervisors");
+					}
+
+					const data = await response.json();
+					setStore({ supervisors: data });
+					return data;
+				} catch (error) {
+					console.log(error);
+					return { 'error': "unexpected error" };
+				}
+			},
+			assignSupervisor: async (id) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/user/assign/${id}`, {
+						method: 'PUT',
+						headers: {
+							"Authorization": `Bearer ${getStore().token}`,
+							"Content-Type": "application/json"
+						}
+					});
+					if (!response.ok) {
+						throw new Error('Failed to assign supervisor');
+					}
+
+					const data = await response.json();
+					if (response.status === 200) {
+						console.log(data.message);
+						await actions.getSupervisors();
+					}
+				} catch (error) {
+					console.log(error);
+
+				}
 			}
+
+
 		}
 
 	}

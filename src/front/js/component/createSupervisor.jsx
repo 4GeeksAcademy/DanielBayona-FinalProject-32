@@ -14,15 +14,15 @@ const initialState = {
   user_id: "",
 };
 
-const CreateWorkerForm = () => {
+const CreateSupervisorForm = () => {
   const { store, actions } = useContext(Context);
   const [user, setUser] = useState(initialState);
 
   useEffect(() => {
-    const fetchWorkers = async () => {
-      await actions.getWorkers();
+    const fetchSupervisors = async () => {
+      await actions.getSupervisors();
     };
-    fetchWorkers();
+    fetchSupervisors();
   }, []);
 
   const handleChange = (event) => {
@@ -33,8 +33,8 @@ const CreateWorkerForm = () => {
     });
   };
 
-  const getUnassignedWorkers = () => {
-    return store.workers.filter((worker) => !worker.is_assigned);
+  const getUnassignedSupervisors = () => {
+    return store.supervisors.filter((supervisor) => !supervisor.is_assigned);
   };
 
   const handleSubmit = async (event) => {
@@ -69,7 +69,7 @@ const CreateWorkerForm = () => {
     }
 
     try {
-      const res = await actions.createWorker({
+      const res = await actions.createSupervisor({
         name: user.name,
         last_name: user.last_name,
         mail: user.mail,
@@ -81,8 +81,8 @@ const CreateWorkerForm = () => {
       });
 
       if (res === 201) {
-        await actions.assignWorker(user.user_id);
-        await actions.getWorkers();
+        await actions.assignSupervisor(user.user_id);
+        await actions.getSupervisors();
         setUser(initialState);
         Swal.fire({
           position: "center",
@@ -95,7 +95,7 @@ const CreateWorkerForm = () => {
         Swal.fire({
           icon: "error",
           title: "Oops...",
-          text: "The worker already exists",
+          text: "The supervisor already exists",
         });
       } else {
         Swal.fire({
@@ -108,7 +108,7 @@ const CreateWorkerForm = () => {
       Swal.fire({
         icon: "error",
         title: "Error",
-        text: "Failed to create worker. Please try again.",
+        text: "Failed to create supervisor. Please try again.",
       });
     }
   };
@@ -264,10 +264,10 @@ const CreateWorkerForm = () => {
               value={user.user_id}
               onChange={handleChange}
             >
-              <option value="">Select worker</option>
-              {getUnassignedWorkers().map((worker, index) => (
-                <option key={index} value={worker.id}>
-                  {worker.username}
+              <option value="">Select Supervisor</option>
+              {getUnassignedSupervisors().map((supervisor, index) => (
+                <option key={index} value={supervisor.id}>
+                  {supervisor.username}
                 </option>
               ))}
             </select>
@@ -289,7 +289,7 @@ const CreateWorkerForm = () => {
   );
 };
 
-const CreateWorker = () => {
+const CreateSupervisor = () => {
   return (
     <div style={{ display: "flex", backgroundColor: "white" }}>
       <nav
@@ -308,10 +308,10 @@ const CreateWorker = () => {
         style={{ marginLeft: "80px", padding: "0px", backgroundColor: "white" }}
       >
         <h1>Create Worker</h1>
-        <CreateWorkerForm />
+        <CreateSupervisorForm />
       </main>
     </div>
   );
 };
 
-export default CreateWorker;
+export default CreateSupervisor;

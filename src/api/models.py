@@ -18,6 +18,7 @@ class User(db.Model):
     pic_id = db.Column(db.String(256), unique=True, nullable=False)
     role = db.Column(Enum(roleEnum), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False, default=False)
+    is_assigned = db.Column(db.Boolean(), unique = False, nullable = False, default = False)
 
     def __repr__(self):
         return f'<User {self.username}>'
@@ -26,7 +27,8 @@ class User(db.Model):
         return {
             "id": self.id,
             "username": self.username,
-            "role" : self.role.value
+            "role" : self.role.value,
+            "is_assigned": self.is_assigned
             # do not serialize the password, its a security breach
         }
 
@@ -39,9 +41,9 @@ class Worker(db.Model):
     phone = db.Column(db.Integer, nullable=False, unique=True)
     adress = db.Column(db.String(254), nullable=False)
     identification = db.Column(db.Integer, nullable=False)
-    username = db.Column(db.String(16), db.ForeignKey("user.username"), unique=True,nullable=False)
-    username_table = db.relationship("User", backref="worker")
-    performance = db.Column(db.Integer, nullable = True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    user = db.relationship("User", backref="worker")
+    performance = db.Column(db.Integer, nullable = True)    
     def __repr__(self):
         return f'<Worker {self.name} ID: {self.id}>'
 
@@ -50,7 +52,7 @@ class Worker(db.Model):
             "id": self.id,
             "name": self.name,
             "last_name": self.last_name,
-            "username": self.username,
+            "username": self.user.username,
             "position": self.position,
             "mail" : self.mail,
             "adress" : self.adress,
@@ -67,8 +69,8 @@ class Supervisor(db.Model):
     phone = db.Column(db.Integer, nullable=False, unique=True)
     adress = db.Column(db.String(254), nullable=False)
     identification = db.Column(db.Integer, nullable=False)
-    username = db.Column(db.String(16), db.ForeignKey("user.username"), unique=True,nullable=False)
-    username_table = db.relationship("User", backref="supervisor")
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
+    user = db.relationship("User", backref="supervisor")
     def __repr__(self):
         return f'<Supervisor {self.name} ID: {self.id}>'
 
@@ -77,7 +79,7 @@ class Supervisor(db.Model):
             "id": self.id,
             "name": self.name,
             "last_name": self.last_name,
-            "username": self.username,
+            "username": self.user.username,
             "position": self.position,
             "mail" : self.mail,
             "adress" : self.adress,
@@ -95,7 +97,7 @@ class Administrator(db.Model):
     adress = db.Column(db.String(254), nullable=False)
     identification = db.Column(db.Integer, nullable=False)
     username = db.Column(db.String(16), db.ForeignKey("user.username"), unique=True,nullable=False)
-    username_table = db.relationship("User", backref="administrator")
+    user = db.relationship("User", backref="administrator")
 
 class Company(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -125,7 +127,7 @@ class Task(db.Model):
     desc= db.Column(db.String, nullable=False)
     review = db.Column(db.String(254))
     status = db.Column(db.String(254), nullable=False, default="To be reviewed")
-    worker_id = db.Column(db.Integer, db.ForeignKey("worker.id"), nullable=False)
+    worker_id = db.Column(db.Integer, db.ForeignKey("worker.id"))
     worker_table = db.relationship("Worker", backref="task")
     supervisor_id = db.Column(db.Integer, db.ForeignKey("supervisor.id"))
     supervisor_table = db.relationship("Supervisor", backref="task")
