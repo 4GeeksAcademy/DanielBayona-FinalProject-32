@@ -85,22 +85,25 @@ export const SuperVisorNavBar = () => {
 
                             >
                                 <FontAwesomeIcon icon={faUserGroup} className="pe-2" />
-                                WORKERS
+                                CREATE WORKER
                             </NavLink>
                         </li>
                         <li
                             className={`nav-item ${activeItem === 3 ? "active" : ""}`}
                             onClick={() => handleChangeColor(3)}
                         >
-                            <a
-                                className={`nav-link fst-italic fw-bolder ${activeItem === 3 ? "text-white" : "text-dark"
-                                    }`}
-                                aria-current="page"
-                                href="#"
+                            <NavLink
+                                end
+                                className={({ isActive }) =>
+                                    isActive
+                                        ? "nav-link active transition text-white fst-italic fw-bolder"
+                                        : "nav-link inactive transition text-dark fst-italic fw-bolder"
+                                }
+                                to="/supervisor/CreateCompany"
                             >
                                 <FontAwesomeIcon icon={faPen} className="pe-2" />
-                                COMPANIES
-                            </a>
+                                CREATE COMPANY
+                            </NavLink>
                         </li>
                         <li className="nav-item bottom-item">
                             <a
