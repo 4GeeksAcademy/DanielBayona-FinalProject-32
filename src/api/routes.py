@@ -79,10 +79,27 @@ def get_users():
 
 @api.route('/user/workers', methods=['GET'])
 def get_user_workers():
-    users = User()
-    users = users.query.filter_by(role='worker').all()
+    users = User.query.filter_by(role='worker', is_assigned=False).all()
+    all_users = list(map(lambda x: x.serialize(), users))
+    return jsonify(all_users)
+
+
+@api.route('/user/supervisors', methods = ['GET'])
+def get_user_supervisor():
+    users = User.query.filter_by(role='supervisor', is_assigned = False).all()
     all_users = list(map(lambda x:x.serialize(), users))
     return jsonify(all_users)
+
+@api.route('/user/assign/<int:user_id>', methods=['PUT'])
+def assign_user(user_id):
+    user = User.query.get(user_id)
+    if user:
+        user.is_assigned = True
+        db.session.commit()
+        return jsonify({"message": "User assigned successfully"}), 200
+    return jsonify({"error": "User not found"}), 404
+
+
 
 @api.route('/user/<int:id>', methods=["GET"])
 def get_user():
@@ -211,7 +228,7 @@ def valid_token():
 @api.route("/issue", methods=["GET"])
 def  get_issues():
     issues= Issue()
-    issues= issues.query.all
+    issues= issues.query.all()
     all_issues =  list(map(lambda x:x.serialize(), issues))
     return jsonify(all_issues)
 
@@ -300,20 +317,20 @@ def delete_issue(id):
         return jsonify({"message": f"Error at deleting issue {error}"}), 400
 
 @api.route('/supervisor', methods=['POST'])
-def createSupervisor():
-    form_data = request.form
+def create_supervisor():
+    form_data = request.json
     #data = request.json
     
     name = form_data.get('name')
     last_name = form_data.get('last_name')
-    username = form_data.get('username')
     position = form_data.get('position')
     mail = form_data.get('mail')
     adress = form_data.get("adress")
     phone = form_data.get("phone")
     identification = form_data.get("identification")
+    user_id = form_data.get('user_id')
     
-    user = User.query.filter_by(username=username, role='supervisor').one_or_none()
+    user = User.query.filter_by(id=user_id, role='supervisor').one_or_none()
     
     if user is None:
         return jsonify({"message": "User with supervisor role not found"}), 400
@@ -327,12 +344,12 @@ def createSupervisor():
     supervisor = Supervisor(
         name = name,
         last_name = last_name,
-        username=user.username,
         position = position,
         mail = mail,
         adress = adress,
         phone = phone,
-        identification = identification
+        identification = identification,
+        user_id = user.id
     ) 
     try:
         db.session.add(supervisor)
@@ -431,10 +448,10 @@ def create_worker():
     phone = form_data.get('phone')
     adress = form_data.get('adress')
     identification = form_data.get('identification')
-    username = form_data.get('username')
+    user_id = form_data.get('user_id')
     
     user = User()
-    user = user.query.filter_by(username=username, role ='worker').one_or_none()
+    user = user.query.filter_by(id=user_id, role ='worker').one_or_none()
     
     if user is None:
         return jsonify({'Message': 'Username with worker role not found'}), 400
@@ -453,7 +470,7 @@ def create_worker():
        phone = phone,
        adress = adress,
        identification = identification,
-       username = user.username 
+       user_id = user.id
     )
     
     try:

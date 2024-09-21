@@ -12,10 +12,12 @@ import Worker from "./pages/worker.jsx"
 import AdminCreateUser from "./pages/adminCreateUser.jsx";
 import AdminCreateIssue from "./pages/adminCreateIssue.jsx";
 import SupervisorCreateWorker from "./pages/supervisorCreateWorker.jsx";
+import SupervisorCreateCompany from "./pages/supervisorCreateCompany.jsx";
+import AdminCreateSupervisor from "./pages/adminCreateSupervisor.jsx";
 
 
 import injectContext from "./store/appContext";
-
+import AdminGetUsers from "./pages/AdminGetUsers.jsx";
 //create your first component
 const Layout = () => {
     //the basename is used when your project is published in a subdirectory and not in the root of the domain
@@ -33,12 +35,14 @@ const Layout = () => {
                     <Routes>
                         <Route path="/" element={<Login />} />
                         <Route path="/login" element={<Login />} />
-                        <Route path="/admin" element={<Admin />} />
+                        <Route path="/admin" element={<AdminGetUsers />} />
                         <Route path="/supervisor" element={<Supervisor />} />
                         <Route path="/worker" element={<Worker />} />
                         <Route path="/admin/CreateUser" element={<AdminCreateUser />} />
                         <Route path="/admin/CreateIssue" element={<AdminCreateIssue />} />
                         <Route path="/supervisor/CreateWorker" element={<SupervisorCreateWorker />} />
+                        <Route path="/admin/CreateSupervisor" element={<AdminCreateSupervisor />} />
+                        <Route path="/supervisor/CreateCompany" element={<SupervisorCreateCompany />} />
                     </Routes>
                 </ScrollToTop>
             </BrowserRouter>

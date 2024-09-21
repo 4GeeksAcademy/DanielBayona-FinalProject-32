@@ -10,6 +10,8 @@ import {
   faUsers,
   faBars,
   faTimes,
+  faUser
+
 } from "@fortawesome/free-solid-svg-icons";
 
 export default function Sidebar() {
@@ -41,9 +43,8 @@ export default function Sidebar() {
         <FontAwesomeIcon icon={isOpen ? faTimes : faBars} />
       </button>
       <nav
-        className={`navbar nav-bar-left navbar-left d-flex flex-column navbar-expand-lg ${
-          isOpen ? "open" : ""
-        }`}
+        className={`navbar nav-bar-left navbar-left d-flex flex-column navbar-expand-lg ${isOpen ? "open" : ""
+          }`}
       >
         <div className="container-fluid flex-column">
           <a className="navbar-brand" href="#">
@@ -95,8 +96,23 @@ export default function Sidebar() {
                   to="/admin/CreateUser"
                   onClick={() => setIsOpen(false)}
                 >
-                  <FontAwesomeIcon icon={faUsers} className="pe-2" />
+                  <FontAwesomeIcon icon={faUser} className="pe-2" />
                   CREATE USER
+                </NavLink>
+              </li>
+              <li className="small-text">
+                <NavLink
+                  className={({ isActive }) =>
+                    isActive
+                      ? "nav-link active transition text-white fst-italic fw-bolder"
+                      : "nav-link inactive transition text-dark fst-italic fw-bolder"
+                  }
+
+                  to="/admin/CreateSupervisor"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <FontAwesomeIcon icon={faUsers} className="pe-2" />
+                  CREATE SUPERVISOR
                 </NavLink>
               </li>
               <li className="nav-item bottom-item small-text">

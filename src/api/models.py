@@ -18,6 +18,7 @@ class User(db.Model):
     pic_id = db.Column(db.String(256), unique=True, nullable=False)
     role = db.Column(Enum(roleEnum), unique=False, nullable=False)
     is_active = db.Column(db.Boolean(), unique=False, nullable=False, default=False)
+    is_assigned = db.Column(db.Boolean(), unique = False, nullable = False, default = False)
 
     def __repr__(self):
         return f'<User {self.username}>'
@@ -26,7 +27,9 @@ class User(db.Model):
         return {
             "id": self.id,
             "username": self.username,
-            "role" : self.role.value
+            "role" : self.role.value,
+            "pic": self.pic,
+            "is_assigned": self.is_assigned
             # do not serialize the password, its a security breach
         }
 
@@ -39,10 +42,9 @@ class Worker(db.Model):
     phone = db.Column(db.Integer, nullable=False, unique=True)
     adress = db.Column(db.String(254), nullable=False)
     identification = db.Column(db.Integer, nullable=False)
-    username = db.Column(db.String(16), db.ForeignKey("user.username"), unique=True,nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-    username_table = db.relationship("User", backref="worker")
-    performance = db.Column(db.Integer, nullable = True)
+    user = db.relationship("User", backref="worker")
+    performance = db.Column(db.Integer, nullable = True)    
     def __repr__(self):
         return f'<Worker {self.name} ID: {self.id}>'
 
@@ -51,7 +53,7 @@ class Worker(db.Model):
             "id": self.id,
             "name": self.name,
             "last_name": self.last_name,
-            "username": self.username,
+            "username": self.user.username,
             "position": self.position,
             "mail" : self.mail,
             "adress" : self.adress,
@@ -68,9 +70,9 @@ class Supervisor(db.Model):
     phone = db.Column(db.Integer, nullable=False, unique=True)
     adress = db.Column(db.String(254), nullable=False)
     identification = db.Column(db.Integer, nullable=False)
-    username = db.Column(db.String(16), db.ForeignKey("user.username"), unique=True,nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
-    user_table = db.relationship("User", backref="supervisor")
+    user = db.relationship("User", backref="supervisor")
+
     def __repr__(self):
         return f'<Supervisor {self.name} ID: {self.id}>'
 
@@ -79,7 +81,7 @@ class Supervisor(db.Model):
             "id": self.id,
             "name": self.name,
             "last_name": self.last_name,
-            "username": self.username,
+            "username": self.user.username,
             "position": self.position,
             "mail" : self.mail,
             "adress" : self.adress,
@@ -87,17 +89,6 @@ class Supervisor(db.Model):
             "identification" : self.identification
         }
 
-class Administrator(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=False)
-    last_name = db.Column(db.String(50), nullable=False)
-    position = db.Column(db.String(60), nullable=False)
-    mail = db.Column(db.String(254), nullable=False, unique=True)
-    phone = db.Column(db.Integer, nullable=False, unique=True)
-    adress = db.Column(db.String(254), nullable=False)
-    identification = db.Column(db.Integer, nullable=False)
-    username = db.Column(db.String(16), db.ForeignKey("user.username"), unique=True,nullable=False)
-    user_table = db.relationship("User", backref="administrator")
 
 class Company(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -154,8 +145,6 @@ class Issue(db.Model):
     proof_id = db.Column(db.String(256), unique=True, nullable=False)
     review = db.Column(db.String)
     status = db.Column(db.String, nullable=False, default="To Review")
-    admin_id = db.Column(db.Integer, db.ForeignKey("administrator.id"), default=1)
-    administrator_table = db.relationship("Administrator", backref="issue") 
     user_id =  db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     user_table = db.relationship("User", backref="issue")
 

@@ -2,19 +2,9 @@ import React, { useContext } from "react";
 import { Context } from "../store/appContext.js";
 import { Navigate } from "react-router-dom";
 import Sidebar from "../component/Sidebar.jsx";
-import CreateIssue from "../component/createIssue.js";
+import CreateSupervisor from "../component/createSupervisor.jsx";
 
-
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faBell,
-  faUser,
-
-} from "@fortawesome/free-solid-svg-icons";
-
-
-
-const AdminCreateIssue = () => {
+const AdminCreateSupervisor = () => {
   const { store, actions } = useContext(Context);
   return (
     <>
@@ -23,11 +13,11 @@ const AdminCreateIssue = () => {
       ) : (
         <>
           <Sidebar />
-          <CreateIssue />
+          <CreateSupervisor />
         </>
       )}
     </>
   );
 };
 
-export default AdminCreateIssue;
+export default AdminCreateSupervisor;
