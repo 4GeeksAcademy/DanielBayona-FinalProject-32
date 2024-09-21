@@ -228,7 +228,7 @@ def valid_token():
 @api.route("/issue", methods=["GET"])
 def  get_issues():
     issues= Issue()
-    issues= issues.query.all
+    issues= issues.query.all()
     all_issues =  list(map(lambda x:x.serialize(), issues))
     return jsonify(all_issues)
 

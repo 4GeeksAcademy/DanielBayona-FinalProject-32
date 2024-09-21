@@ -14,7 +14,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 					initial: "white"
 				}
 			],
-			token: localStorage.getItem("token") || null,
+			token: localStorage.getItem("access_token") || null,
 			user: localStorage.getItem("user") || null,
 			workers: [],
 			supervisors: []
@@ -256,9 +256,41 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error);
 					return { 'error': 'error while creating company' }
 				}
+			},
+			getUsers: async () => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/user`, {
+						method: 'GET',
+					});
+					if (response.ok) {
+						const data = await response.json();
+						return data;
+					} else {
+						return response.status
+					}
+				} catch (error) {
+					console.log(error);
+
+				}
+			},
+
+			getBugs: async () => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/issue`, {
+						method: 'GET',
+					});
+					if (response.ok) {
+						const data = await response.json();
+						return data;
+					} else {
+						return response.status
+					}
+
+				} catch (error) {
+					console.log(error);
+
+				}
 			}
-
-
 		}
 
 	}

@@ -28,6 +28,7 @@ class User(db.Model):
             "id": self.id,
             "username": self.username,
             "role" : self.role.value,
+            "pic": self.pic,
             "is_assigned": self.is_assigned
             # do not serialize the password, its a security breach
         }
@@ -87,17 +88,6 @@ class Supervisor(db.Model):
             "identification" : self.identification
         }
 
-class Administrator(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50), nullable=False)
-    last_name = db.Column(db.String(50), nullable=False)
-    position = db.Column(db.String(60), nullable=False)
-    mail = db.Column(db.String(254), nullable=False, unique=True)
-    phone = db.Column(db.Integer, nullable=False, unique=True)
-    adress = db.Column(db.String(254), nullable=False)
-    identification = db.Column(db.Integer, nullable=False)
-    username = db.Column(db.String(16), db.ForeignKey("user.username"), unique=True,nullable=False)
-    user = db.relationship("User", backref="administrator")
 
 class Company(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -154,8 +144,6 @@ class Issue(db.Model):
     proof_id = db.Column(db.String(256), unique=True, nullable=False)
     review = db.Column(db.String)
     status = db.Column(db.String, nullable=False, default="To Review")
-    admin_id = db.Column(db.Integer, db.ForeignKey("administrator.id"), default=1)
-    administrator_table = db.relationship("Administrator", backref="issue") 
     user_id =  db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     user_table = db.relationship("User", backref="issue")
 
