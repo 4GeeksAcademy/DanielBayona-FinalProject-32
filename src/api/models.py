@@ -72,6 +72,7 @@ class Supervisor(db.Model):
     identification = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     user = db.relationship("User", backref="supervisor")
+
     def __repr__(self):
         return f'<Supervisor {self.name} ID: {self.id}>'
 
