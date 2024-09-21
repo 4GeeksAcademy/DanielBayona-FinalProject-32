@@ -157,16 +157,9 @@ const CreateUserForm = () => {
 
 const CreateUser = () => {
     return (
-        <div style={{ display: "flex", backgroundColor: "white" }}>
-            <nav style={{ backgroundColor: "#A5C894", height: "100vh", padding: "10px 0", width: '250px' }}>
-                <div style={{ textAlign: "center", marginBottom: "10px" }}>
-                    <img src={Logo} alt="Taskyist Logo" style={{ width: "100px" }} />
-                </div>
-            </nav>
-            <main style={{ marginLeft: '80px', padding: '0px', backgroundColor: "white" }}>
-                <h1>Create User</h1>
-                <CreateUserForm />
-            </main>
+        <div className="d-flex justify-content-center align-items-center flex-column pt-5" style={{ backgroundColor: "white" }}>
+            <h1>Create User</h1>
+            <CreateUserForm />
         </div>
     );
 };
