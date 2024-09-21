@@ -84,8 +84,8 @@ const AdminUsers = () => {
                                         <FontAwesomeIcon icon={faCircleInfo} />
                                     </button>
                                     <div className="modal fade" id={`modal-${user.id}`} tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div className="modal-dialog d-flex justify-content-center">
-                                            <div className="modal-content d-flex justify-content-center" style={{ width: "1200px" }}>
+                                        <div className="modal-dialog d-flex justify-content-center modal-lg">
+                                            <div className="modal-content d-flex justify-content-center">
                                                 <div className="modal-header">
                                                     <h5 className="modal-title" id="exampleModalLabel">User Info</h5>
                                                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -95,13 +95,16 @@ const AdminUsers = () => {
                                                         <tr>
                                                             <td className="border" style={{ width: "100%" }}>
                                                                 <img
-                                                                    style={{ height: "550px" }}
+                                                                    className="img-fluid"
                                                                     src={user.pic || "https://static.vecteezy.com/system/resources/thumbnails/002/387/693/small_2x/user-profile-icon-free-vector.jpg"}
                                                                     alt="User profile"
                                                                 />
                                                                 <hr />
-                                                                <p className="fs-1">{`Username: ${user.username}`}</p>
-                                                                <p className="fs-1">{`Role: ${user.role}`}</p>
+                                                                <h2 class="fs-5 fw-bold">Username:</h2>
+                                                                <p className="fs-3">{`${user.username}`}</p>
+                                                                <hr />
+                                                                <h2 class="fs-5 fw-bold">Role:</h2>
+                                                                <p className="fs-3">{`${user.role}`}</p>
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -128,8 +131,8 @@ const AdminUsers = () => {
                                         <FontAwesomeIcon icon={faCircleInfo} />
                                     </button>
                                     <div className="modal fade" id={`modal-${issue.id}`} tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                                        <div className="modal-dialog d-flex justify-content-center">
-                                            <div className="modal-content d-flex justify-content-center" style={{ width: "1200px" }}>
+                                        <div className="modal-dialog d-flex justify-content-center modal-xl">
+                                            <div className="modal-content d-flex justify-content-center">
                                                 <div className="modal-header">
                                                     <h5 className="modal-title" id="exampleModalLabel">Bug Info</h5>
                                                     <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -139,14 +142,19 @@ const AdminUsers = () => {
                                                         <tr>
                                                             <td className="border" style={{ width: "100%" }}>
                                                                 <img
-                                                                    style={{ height: "600px" }}
+                                                                    className="img-fluid"
                                                                     src={issue.proof || "https://static.vecteezy.com/system/resources/thumbnails/002/387/693/small_2x/user-profile-icon-free-vector.jpg"}
                                                                     alt="User profile"
                                                                 />
                                                                 <hr />
-                                                                <p className="fs-1">{`Name: ${issue.name}`}</p>
-                                                                <p className="fs-1">{`Description: ${issue.desc}`}</p>
-                                                                <p className="fs-1">{`Status: ${issue.status}`}</p>
+                                                                <h2 class="fs-5 fw-bold">Name:</h2>
+                                                                <p className="fs-3">{`${issue.name}`}</p>
+                                                                <hr />
+                                                                <h2 class="fs-5 fw-bold">Description:</h2>
+                                                                <p className="fs-3">{`Description: ${issue.desc}`}</p>
+                                                                <hr />
+                                                                <h2 class="fs-5 fw-bold">Status:</h2>
+                                                                <p className="fs-3">{`${issue.status}`}</p>
                                                             </td>
 
                                                         </tr>
