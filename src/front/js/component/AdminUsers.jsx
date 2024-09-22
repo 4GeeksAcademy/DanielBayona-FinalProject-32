@@ -22,6 +22,7 @@ const AdminUsers = () => {
     const [users, setUsers] = useState([]);
     const [issues, setIssues] = useState([]);
     const [view, setView] = useState('users');
+    const navigate = useNavigate();
 
     const getUsers = async () => {
         const response = await actions.getUsers()
@@ -49,11 +50,46 @@ const AdminUsers = () => {
         }
     }
 
+    const deleteUser = (id) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you want to delete to edit this user?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No, cancel!',
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const success = await actions.deleteUser(id);
+                if (success) {
+                    Swal.fire('Deleted!', 'User has been deleted.', 'success');
+                    setUsers(users.filter(user => user.id !== id));
+                } else {
+                    Swal.fire('Error!', 'There was a problem deleting the user.', 'error');
+                }
+            }
+        });
+    }
+
     const handleChange = (event) => {
         const { name, value } = event.target;
         setView(value);
     };
 
+    const handleEditClick = (id) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you want to continue to edit this user?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, edit it!',
+            cancelButtonText: 'No, cancel!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                navigate(`/admin/editUser/${id}`);
+            }
+        });
+    };
 
     useEffect(() => {
         changeOption()
@@ -81,7 +117,7 @@ const AdminUsers = () => {
                                 <td>{user.username}</td>
                                 <td>
                                     <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target={`#modal-${user.id}`}>
-                                        <FontAwesomeIcon icon={faCircleInfo} />
+                                        <FontAwesomeIcon icon={faCircleInfo} className="fa-lg" />
                                     </button>
                                     <div className="modal fade" id={`modal-${user.id}`} tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div className="modal-dialog d-flex justify-content-center modal-lg">
@@ -117,10 +153,10 @@ const AdminUsers = () => {
                                     </div>
                                 </td>
                                 <td>
-                                    <FontAwesomeIcon icon={faPenSquare} />
+                                    <FontAwesomeIcon icon={faPenSquare} onClick={() => handleEditClick(user.id)} className="btn btn-success fa-lg" />
                                 </td>
                                 <td>
-                                    <FontAwesomeIcon icon={faTrash} />
+                                    <FontAwesomeIcon icon={faTrash} onClick={() => deleteUser(user.id)} className="btn btn-danger fa-lg" />
                                 </td>
                             </tr>
                         )) : issues.map((issue) => (

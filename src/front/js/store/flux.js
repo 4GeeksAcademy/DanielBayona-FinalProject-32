@@ -290,6 +290,68 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error);
 
 				}
+			},
+
+			editUser: async (id, user) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/user/${id}`, {
+						method: "PUT",
+						headers: {
+							"Authorization": `Bearer ${getStore().token}`,
+
+						},
+						body: user
+					});
+					if (response.ok) {
+						getActions().getUsers();
+						return true
+					} else {
+						console.log('error while updating user');
+						return false
+					}
+				} catch (error) {
+					console.log(error);
+					return false
+				}
+			},
+			userInfo: async (id) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/user/${id}`, {
+						method: 'GET',
+						headers: {
+							"Authorization": `Bearer ${getStore().token}`,
+							"Content-Type": "application/json"
+						}
+					});
+					if (response.ok) {
+						const data = await response.json();
+						return data
+					} else {
+						const errorData = await response.json();
+						console.error("Error fetching user:", errorData);
+						return response.status;
+					}
+
+				} catch (error) {
+					console.log(error);
+				}
+			},
+			deleteUser: async (id) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/user/${id}`, {
+						method: "DELETE"
+					})
+					if (response.ok) {
+						getActions().getUsers();
+						return true;
+					} else {
+						console.log('error while deleting user');
+						return false
+					}
+				} catch (error) {
+					console.log(error);
+					return false
+				}
 			}
 		}
 

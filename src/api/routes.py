@@ -102,44 +102,37 @@ def assign_user(user_id):
 
 
 @api.route('/user/<int:id>', methods=["GET"])
-def get_user():
-    form_data = request.form
-    id = form_data.get('id')
-    user= User()
+def get_user(id):
     try:
-        user= user.query.filter_by(id = id).first
-        return (user.serialize())
+        user= User()
+        user= user.query.filter_by(id = id).first()
+        if user:
+            return jsonify(user.serialize()),200
+        else:
+            return jsonify({'message': 'error while finding user'}), 404
     except Exception as error:
         return jsonify({"message": f"Error at finding user{error}"}), 400
-
-@api.route('/user/int<int:id>', methods=["PUT"])
+@api.route('/user/<int:id>', methods=["PUT"])
 def update_user(id):
     form_data = request.form
     data_files = request.files 
-    #data = request.json
-    
+
     username = form_data.get('username')
     password = form_data.get('password')
     role = form_data.get('role')
     pic = data_files.get("pic")
 
-    user = User.query.filter_by(id = id).one_or_none()
+    user = User.query.filter_by(id=id).one_or_none()
     if user is None:
-        return jsonify('User doesnt exist'), 400
-    salt = b64encode(os.urandom(32)).decode('utf-8')
-    password = set_password(password, salt)
-    
+        return jsonify({'message': 'User doesn\'t exist'}), 400
 
-
-    user = User()
     if username is not None:
         user.username = username
-    if password is not None: 
+    if password is not None:
         salt = b64encode(os.urandom(32)).decode('utf-8')
-        password = set_password(password, salt)
-        user.password = password
+        user.password = set_password(password, salt)
         user.salt = salt
-    if role is not None: 
+    if role is not None:
         user.role = role
     if pic is not None:
         result_cloud = uploader.upload(pic)
@@ -148,17 +141,17 @@ def update_user(id):
         user.pic = pic_url
         user.pic_id = pic_id
 
-    try: 
+    try:
         db.session.commit()
-        return jsonify({"message": "User updated"}), 201
+        return jsonify({"message": "User updated"}), 200
     except Exception as error:
         print(error.args)
         db.session.rollback()
-        return jsonify({"message": f"Error at updating user {error}"}), 400
+        return jsonify({"message": f"Error at updating user: {error}"}), 400
 
-@api.route('/user', methods=["DELETE"])
+
+@api.route('/user/<int:id>', methods=["DELETE"])
 def delete_user(id):
-    form_data = request.form
 
     try:
         user = User.query.filter_by(id=id).first()
