@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: abcd60874e85
+Revision ID: 154846989e7a
 Revises: 
-Create Date: 2024-09-21 02:35:27.365556
+Create Date: 2024-09-23 17:57:22.290672
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'abcd60874e85'
+revision = '154846989e7a'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -22,9 +22,9 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=50), nullable=False),
     sa.Column('mail', sa.String(length=254), nullable=False),
-    sa.Column('phone', sa.Integer(), nullable=False),
+    sa.Column('phone', sa.BigInteger(), nullable=False),
     sa.Column('adress', sa.String(length=254), nullable=False),
-    sa.Column('identification', sa.Integer(), nullable=False),
+    sa.Column('identification', sa.BigInteger(), nullable=False),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('mail'),
     sa.UniqueConstraint('phone')
@@ -65,9 +65,9 @@ def upgrade():
     sa.Column('last_name', sa.String(length=50), nullable=False),
     sa.Column('position', sa.String(length=60), nullable=False),
     sa.Column('mail', sa.String(length=254), nullable=False),
-    sa.Column('phone', sa.Integer(), nullable=False),
+    sa.Column('phone', sa.BigInteger(), nullable=False),
     sa.Column('adress', sa.String(length=254), nullable=False),
-    sa.Column('identification', sa.Integer(), nullable=False),
+    sa.Column('identification', sa.BigInteger(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id'),
@@ -80,9 +80,9 @@ def upgrade():
     sa.Column('last_name', sa.String(length=50), nullable=False),
     sa.Column('position', sa.String(length=60), nullable=False),
     sa.Column('mail', sa.String(length=254), nullable=False),
-    sa.Column('phone', sa.Integer(), nullable=False),
+    sa.Column('phone', sa.BigInteger(), nullable=False),
     sa.Column('adress', sa.String(length=254), nullable=False),
-    sa.Column('identification', sa.Integer(), nullable=False),
+    sa.Column('identification', sa.BigInteger(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('performance', sa.Integer(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
