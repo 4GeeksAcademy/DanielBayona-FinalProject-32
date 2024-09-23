@@ -47,15 +47,18 @@ export const SuperVisorNavBar = () => {
                             className={`nav-item ${activeItem === 0 ? "active" : ""}`}
                             onClick={() => handleChangeColor(0)}
                         >
-                            <a
-                                className={`nav-link fst-italic fw-bolder ${activeItem === 0 ? "text-white" : "text-dark"
-                                    }`}
-                                aria-current="page"
-                                href="#"
+                            <NavLink
+                                end
+                                className={({ isActive }) =>
+                                    isActive
+                                        ? "nav-link active transition text-white fst-italic fw-bolder"
+                                        : "nav-link inactive transition text-dark fst-italic fw-bolder"
+                                }
+                                to="/supervisor"
                             >
                                 <FontAwesomeIcon icon={faHouse} className="pe-2" />
                                 HOME
-                            </a>
+                            </NavLink>
                         </li>
                         <li
                             className={`nav-item ${activeItem === 1 ? "active" : ""}`}

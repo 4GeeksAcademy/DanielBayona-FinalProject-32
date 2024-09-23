@@ -1,3 +1,7 @@
+import { faChalkboardTeacher } from "@fortawesome/free-solid-svg-icons";
+import { faPersonMilitaryToPerson } from "@fortawesome/free-solid-svg-icons/faPersonMilitaryToPerson";
+import { resolvePath } from "react-router-dom";
+
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
@@ -257,6 +261,22 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return { 'error': 'error while creating company' }
 				}
 			},
+			getCompanies: async () => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/company`, {
+						method: 'GET',
+					});
+					if (response.ok) {
+						const data = await response.json();
+						return data;
+					} else {
+						return response.status
+					}
+				} catch (error) {
+					console.log(error);
+
+				}
+			},
 			getUsers: async () => {
 				try {
 					const response = await fetch(`${process.env.BACKEND_URL}/api/user`, {
@@ -314,6 +334,52 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false
 				}
 			},
+			editCompany: async (id, company) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/company/${id}`, {
+						method: "PUT",
+						headers: {
+							"Authorization": `Bearer ${getStore().token}`
+						},
+						body: company
+					});
+					if (response.ok) {
+						getActions().getCompanies();
+						return true
+					} else {
+						console.log('error while updating company');
+						return false;
+
+					}
+				} catch (error) {
+					console.log(error);
+					return false;
+
+				}
+			},
+			companyInfo: async (id) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/company/${id}`, {
+						method: "GET",
+						headers: {
+							"Authorization": `Bearer ${getStore().token}`,
+							"Content-Type": "application/json"
+						}
+					});
+					if (response.ok) {
+						const data = await response.json();
+						return data
+					} else {
+						const errorData = await response.json();
+						console.log("Error fetching company", errorData);
+						return response.status
+
+					}
+				} catch (error) {
+					console.log(error);
+
+				}
+			},
 			userInfo: async (id) => {
 				try {
 					const response = await fetch(`${process.env.BACKEND_URL}/api/user/${id}`, {
@@ -351,6 +417,23 @@ const getState = ({ getStore, getActions, setStore }) => {
 				} catch (error) {
 					console.log(error);
 					return false
+				}
+			},
+			deleteCompany: async (id) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/company/${id}`, {
+						method: "DELETE"
+					});
+					if (response.ok) {
+						getActions().getCompanies();
+						return true;
+					} else {
+						console.log('error while deleting Company');
+						return false;
+					}
+				} catch (error) {
+					console.log(error);
+					return false;
 				}
 			}
 		}

@@ -39,9 +39,9 @@ class Worker(db.Model):
     last_name = db.Column(db.String(50), nullable=False)
     position = db.Column(db.String(60), nullable=False)
     mail = db.Column(db.String(254), nullable=False, unique=True)
-    phone = db.Column(db.Integer, nullable=False, unique=True)
+    phone = db.Column(db.BigInteger, nullable=False, unique=True)
     adress = db.Column(db.String(254), nullable=False)
-    identification = db.Column(db.Integer, nullable=False)
+    identification = db.Column(db.BigInteger, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     user = db.relationship("User", backref="worker")
     performance = db.Column(db.Integer, nullable = True)    
@@ -67,9 +67,9 @@ class Supervisor(db.Model):
     last_name = db.Column(db.String(50), nullable=False)
     position = db.Column(db.String(60), nullable=False)
     mail = db.Column(db.String(254), nullable=False, unique=True)
-    phone = db.Column(db.Integer, nullable=False, unique=True)
+    phone = db.Column(db.BigInteger, nullable=False, unique=True)
     adress = db.Column(db.String(254), nullable=False)
-    identification = db.Column(db.Integer, nullable=False)
+    identification = db.Column(db.BigInteger, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
     user = db.relationship("User", backref="supervisor")
 
@@ -94,9 +94,9 @@ class Company(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(50), nullable=False)
     mail = db.Column(db.String(254), nullable=False, unique=True)
-    phone = db.Column(db.Integer, nullable=False, unique=True)
+    phone = db.Column(db.BigInteger, nullable=False, unique=True)
     adress = db.Column(db.String(254), nullable=False)
-    identification = db.Column(db.Integer, nullable=False)
+    identification = db.Column(db.BigInteger, nullable=False)
     def __repr__(self):
         return f'<Company {self.name} ID: {self.id}>'
 
