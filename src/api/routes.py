@@ -725,6 +725,7 @@ def create_task():
     name = form_data.get('name')
     desc = form_data.get('desc')
     work = data_files.get("work") 
+    company = data_files.get('company')
     date = form_data.get('date')
 
     result_cloud = uploader.upload(work)
@@ -743,6 +744,7 @@ def create_task():
         work=work_url,
         work_id=work_id,
         date=date,
+        company = company,
         supervisor_id=supervisor_id if supervisor_id is not None else None,
         worker_id=worker_id if worker_id is not None else None
     )

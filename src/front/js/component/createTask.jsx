@@ -131,6 +131,16 @@ const CreateTaskForm = () => {
                         />
                     </label>
                     <label style={{ display: "flex", flexDirection: "column", marginBottom: "10px" }}>
+                        Company:
+                        <input
+                            name="company"
+                            type="text"
+                            className="form-control"
+                            value={task.company}
+                            onChange={handleChange}
+                        />
+                    </label>
+                    <label style={{ display: "flex", flexDirection: "column", marginBottom: "10px" }}>
                         Date:
                         <input
                             name="date"
