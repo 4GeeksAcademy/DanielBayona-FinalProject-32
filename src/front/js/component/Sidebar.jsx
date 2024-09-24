@@ -20,14 +20,6 @@ export default function Sidebar() {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
 
-  const handleLogout = () => {
-    const response = actions.logout();
-    console.log("funciona");
-
-    if (response) {
-      navigate("/");
-    }
-  };
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -115,19 +107,7 @@ export default function Sidebar() {
                   CREATE SUPERVISOR
                 </NavLink>
               </li>
-              <li className="nav-item bottom-item small-text">
-                <a
-                  className="nav-link text-dark fst-italic fw-bolder"
-                  onClick={() => {
-                    handleLogout();
-                    setIsOpen(false);
-                  }}
-                  role="button"
-                >
-                  <FontAwesomeIcon icon={faRightFromBracket} className="pe-2" />
-                  LOG OUT
-                </a>
-              </li>
+
             </ul>
           </div>
         </div>

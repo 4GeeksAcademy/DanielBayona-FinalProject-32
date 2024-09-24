@@ -57,7 +57,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({
 					token: null
 				})
-				localStorage.removeItem("token")
+				localStorage.removeItem("access_token")
 				localStorage.removeItem("user")
 
 				return true
@@ -71,9 +71,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 						}
 					})
 					const data = await response.json()
-
+					console.log("Token validation response:", data);
 					if (response.ok) {
 						setStore({
+							id: data.id,
 							user: data.role
 						})
 						localStorage.setItem('user', JSON.stringify(data))
@@ -83,6 +84,34 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				} catch (error) {
 					console.log(error)
+				}
+			},
+			getUserProfile: async () => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/profile`, {
+						method: "GET",
+						headers: {
+							"Authorization": `Bearer ${getStore().token}`
+						}
+					});
+					const data = await response.json();
+
+					if (response.ok) {
+
+						setStore({
+							id: data.id || null,
+							user: data.role || null,
+							pic: data.pic || null
+						});
+						localStorage.setItem('user', JSON.stringify(data));
+						return data;
+					} else {
+						console.error("Error fetching user data:", data);
+						return null;
+					}
+				} catch (error) {
+					console.log("Network error:", error);
+					return null;
 				}
 			},
 			// SIGNUP / REGISTRO

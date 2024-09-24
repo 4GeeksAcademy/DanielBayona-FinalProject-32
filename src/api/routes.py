@@ -194,12 +194,23 @@ def login():
 # PROTECTED ROUTE PROFILE / RUTA PROTEGIDA PERFIL
 # Protect a route with jwt_required, which will kick out requests
 # without a valid JWT present.
+
 @api.route("/profile", methods=["GET"])
 @jwt_required()
 def get_profile():
-    # Access the identity of the current user with get_jwt_identity
-    current_user = get_jwt_identity()
-    return jsonify(logged_in_as=current_user), 200
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+    if not user:
+        return jsonify({"msg": "User not found"}), 404
+
+    user_data = {
+        "id": user.id,
+        "role": str(user.role.value),
+        "pic": user.pic or None,
+        "username": user.username
+    }
+
+    return jsonify(user_data), 200
 
 # PROTECTED ROUTE VALID TOKEN / RUTA PROTEGIDA VALIDACION DE TOKEN
 @api.route("/valid-token", methods=["GET"])
