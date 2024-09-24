@@ -118,6 +118,7 @@ class Task(db.Model):
     desc= db.Column(db.String, nullable=False)
     review = db.Column(db.String(254))
     status = db.Column(db.String(254), nullable=False, default="To be reviewed")
+    date = db.Column(db.Date, nullable=False)
     worker_id = db.Column(db.Integer, db.ForeignKey("worker.id"))
     worker_table = db.relationship("Worker", backref="task")
     supervisor_id = db.Column(db.Integer, db.ForeignKey("supervisor.id"))
@@ -134,7 +135,8 @@ class Task(db.Model):
             "name": self.name,
             "desc" : self.desc,
             "worker_id" : self.worker_id,
-            "status" : self.status
+            "status" : self.status,
+            "date" : self.date
         }
 
 class Issue(db.Model):

@@ -706,6 +706,7 @@ def create_task():
     name = form_data.get('name')
     desc = form_data.get('desc')
     work = data_files.get("work") 
+    date = form_data.get('date')
 
     result_cloud = uploader.upload(work)
     work_url = result_cloud.get("secure_url")
@@ -722,6 +723,7 @@ def create_task():
         desc = desc,
         work = work_url,
         work_id = work_id,
+        date = date
     )
     if supervisor_id is not None:
         task = task(
@@ -754,6 +756,7 @@ def update_task(id):
     name = form_data.get('name')
     desc = form_data.get('desc')
     status = form_data.get('status')
+    date = form_data.get('date')
     work = data_files.get('work')
     worker_id = form_data.get('worker_id')
     supervisor_id = supervisor_table.id
@@ -764,6 +767,8 @@ def update_task(id):
         return jsonify({"Message": "Task doesn't exist"}), 404
 
     task.supervisor_id = supervisor_id
+    if date is not None: 
+        task.date = date
     if name is not None:
         task.name = name
     if desc is not None:
