@@ -10,7 +10,8 @@ const initialState = {
     "user_id": "",
     "desc": "",
     "work": "",
-    "date" : ""
+    "date" : "",
+    "company" : ""
 }
 
 const CreateTaskForm = () => {
