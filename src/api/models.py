@@ -123,7 +123,7 @@ class Task(db.Model):
     worker_table = db.relationship("Worker", backref="task")
     supervisor_id = db.Column(db.Integer, db.ForeignKey("supervisor.id"))
     supervisor_table = db.relationship("Supervisor", backref="task")
-    company = db.Column(db.Integer, db.ForeignKey("company.id"), nullable=False, unique=True)
+    company = db.Column(db.Integer, db.ForeignKey("company.id"), nullable=False)
     company_table = db.relationship("Company", backref="task")
 
     def __repr__(self):
@@ -137,7 +137,10 @@ class Task(db.Model):
             "worker_id" : self.worker_id,
             "status" : self.status,
             "date" : self.date,
-            "work": self.work
+            "work": self.work,
+            "company": self.company,
+            "company_name": self.company_table.name if self.company_table else None
+            
         }
 
 class Issue(db.Model):

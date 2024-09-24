@@ -124,6 +124,21 @@ const Home = () => {
         });
     }
 
+    const handleEditClickCompany = (id) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you want to continue to edit this Company?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, edit it!',
+            cancelButtonText: 'No, cancel!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                navigate(`/supervisor/editCompany/${id}`);
+            }
+        });
+    }
+
 
     useEffect(() => {
         changeOption()
@@ -175,6 +190,9 @@ const Home = () => {
                                                                 <h2 className="fs-5 fw-bold">Name:</h2>
                                                                 <p className="fs-3">{`${task.name}`}</p>
                                                                 <hr />
+                                                                <h2 className="fs-5 fw-bold">Company:</h2>
+                                                                <p className="fs-3">{`${task.company_name}`}</p>
+                                                                <hr />
                                                                 <h2 className="fs-5 fw-bold">Description:</h2>
                                                                 <p className="fs-3">{`Description: ${task.desc}`}</p>
                                                                 <hr />
@@ -183,6 +201,7 @@ const Home = () => {
                                                                 <hr />
                                                                 <h2 className="fs-5 fw-bold">Date:</h2>
                                                                 <p className="fs-3">{`${task.date}`}</p>
+
                                                             </td>
                                                         </tr>
                                                     </table>
@@ -247,7 +266,7 @@ const Home = () => {
                                     </div>
                                 </td>
                                 <td>
-                                    <FontAwesomeIcon icon={faPenSquare} onClick={() => handleEditClick(company.id)} className="btn btn-success fa-lg" />
+                                    <FontAwesomeIcon icon={faPenSquare} onClick={() => handleEditClickCompany(company.id)} className="btn btn-success fa-lg" />
                                 </td>
                                 <td>
                                     <FontAwesomeIcon icon={faTrash} onClick={() => deleteCompany(company.id)} className="btn btn-danger fa-lg" />
