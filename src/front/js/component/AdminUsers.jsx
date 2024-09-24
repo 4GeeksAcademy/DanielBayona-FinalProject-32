@@ -91,6 +91,42 @@ const AdminUsers = () => {
         });
     };
 
+    const deleteIssue = (id) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you want to delete to edit this issue?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No, cancel!',
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const success = await actions.deleteIssue(id);
+                if (success) {
+                    Swal.fire('Deleted!', 'Issue has been deleted.', 'success');
+                    setIssues(issues.filter(issue => issue.id !== id));
+                } else {
+                    Swal.fire('Error!', 'There was a problem deleting the issue.', 'error');
+                }
+            }
+        });
+    }
+
+    const handleEditClickIssue = (id) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you want to continue to edit this issue?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, edit it!',
+            cancelButtonText: 'No, cancel!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                navigate(`/admin/editIssue/${id}`);
+            }
+        });
+    };
+
     useEffect(() => {
         changeOption()
     }, [view])
@@ -204,10 +240,10 @@ const AdminUsers = () => {
                                     </div>
                                 </td>
                                 <td>
-                                    <FontAwesomeIcon icon={faPenSquare} />
+                                    <FontAwesomeIcon icon={faPenSquare} onClick={() => handleEditClickIssue(issue.id)} className="btn btn-success fa-lg" />
                                 </td>
                                 <td>
-                                    <FontAwesomeIcon icon={faTrash} />
+                                    <FontAwesomeIcon icon={faTrash} onClick={() => deleteIssue(issue.id)} className="btn btn-danger fa-lg" />
                                 </td>
                             </tr>
                         ))}

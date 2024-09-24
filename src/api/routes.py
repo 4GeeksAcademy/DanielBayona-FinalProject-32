@@ -225,11 +225,11 @@ def  get_issues():
     all_issues =  list(map(lambda x:x.serialize(), issues))
     return jsonify(all_issues)
 
-@api.route('/issue/int<int:id>', methods=["GET"])
+@api.route('/issue/<int:id>', methods=["GET"])
 def get_issue(id):
     issue= Issue()
     try:
-        issue= issue.query.filter_by(id = id).first
+        issue= issue.query.filter_by(id = id).first()
         return (issue.serialize())
     except Exception as error:
         return jsonify({"message": f"Error at finding issue{error}"}), 400
@@ -266,48 +266,64 @@ def create_issue():
         db.session.rollback()
         return jsonify({"message": f"Error at creating issue {error}"}), 400
 
+
 @api.route("/issue/<int:id>", methods=["PUT"])
 def update_issue(id):
     form_data = request.form
     data_files = request.files 
-    
+
+
     name = form_data.get('name')
     desc = form_data.get('desc')
     status = form_data.get('status')
-    proof = data_files.get("proof") 
+    proof = data_files.get('proof')
+    review = form_data.get('review')
 
-    result_cloud = uploader.upload(proof)
-    proof_url = result_cloud.get("secure_url")
-    proof_id = result_cloud.get("public_id")
-
-    issue = Issue()
+    issue = Issue.query.filter_by(id=id).one_or_none()
+    
+    if issue is None:
+        return jsonify({"Message": "issue doesn't exist"}), 404
+    if name is not None:
+        issue.name = name
+    if desc is not None:
+        issue.desc = desc
+    if status is not None:
+        issue.status = status 
+    if proof is not None:
+        result_cloud = uploader.upload(proof)
+        proof_url = result_cloud.get("secure_url")
+        proof_id = result_cloud.get("public_id")
+        issue.proof = proof_url
+        issue.proof_id = proof_id
+    if review is not None: 
+        issue.review = review
+    if status is not None:
+        issue.status = status
 
     try:
-        issue = update(issue).where(id = id).values(
-        name = name,
-        desc = desc,
-        proof = proof_url,
-        proof_id = proof_id,
-        status = status
-        )
         db.session.commit()
-        return jsonify({"message": "Issue updated"}), 201
+        return jsonify({"message": "Issue updated successfully"}), 200
     except Exception as error:
         print(error.args)
         db.session.rollback()
-        return jsonify({"message": f"Error at updating issue {error}"}), 400
+        return jsonify({"message": f"Error updating issue: {error}"}), 400
     
 @api.route("/issue/<int:id>", methods=["DELETE"])
 def delete_issue(id):
-    issue = Issue()
     try:
-        issue = delete(issue).where(id = id)
-        db.session.commit()
-        return jsonify({"message": "Issue has been deleted successfully"}, 201)
+        issue = Issue.query.filter_by(id=id).first()
+
+        if issue:
+            db.session.delete(issue)
+            db.session.commit()
+            return jsonify({"message": "Issue has been deleted successfully"}), 200
+        else:
+            return jsonify({"message": "Issue not found"}), 404
+
     except Exception as error:
-        print(error.args)
         db.session.rollback()
-        return jsonify({"message": f"Error at deleting issue {error}"}), 400
+        return jsonify({"message": f"Error at deleting issue: {error}"}), 400
+
 
 @api.route('/supervisor', methods=['POST'])
 def create_supervisor():

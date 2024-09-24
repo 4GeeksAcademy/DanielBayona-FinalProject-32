@@ -357,6 +357,28 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				}
 			},
+			editIssue: async (id, issue) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/issue/${id}`, {
+						method: "PUT",
+						headers: {
+							"Authorization": `Bearer ${getStore().token}`,
+
+						},
+						body: issue
+					});
+					if (response.ok) {
+						getActions().getBugs();
+						return true
+					} else {
+						console.log('error while updating issue');
+						return false
+					}
+				} catch (error) {
+					console.log(error);
+					return false
+				}
+			},
 			companyInfo: async (id) => {
 				try {
 					const response = await fetch(`${process.env.BACKEND_URL}/api/company/${id}`, {
@@ -402,6 +424,28 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error);
 				}
 			},
+			issueInfo: async (id) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/issue/${id}`, {
+						method: 'GET',
+						headers: {
+							"Authorization": `Bearer ${getStore().token}`,
+							"Content-Type": "application/json"
+						}
+					});
+					if (response.ok) {
+						const data = await response.json();
+						return data
+					} else {
+						const errorData = await response.json();
+						console.error("Error fetching issue:", errorData);
+						return response.status;
+					}
+
+				} catch (error) {
+					console.log(error);
+				}
+			},
 			deleteUser: async (id) => {
 				try {
 					const response = await fetch(`${process.env.BACKEND_URL}/api/user/${id}`, {
@@ -434,6 +478,23 @@ const getState = ({ getStore, getActions, setStore }) => {
 				} catch (error) {
 					console.log(error);
 					return false;
+				}
+			},
+			deleteIssue: async (id) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/issue/${id}`, {
+						method: "DELETE"
+					})
+					if (response.ok) {
+						getActions().getBugs();
+						return true;
+					} else {
+						console.log('error while deleting issue');
+						return false
+					}
+				} catch (error) {
+					console.log(error);
+					return false
 				}
 			}
 		}
