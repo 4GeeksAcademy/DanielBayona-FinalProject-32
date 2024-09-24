@@ -137,7 +137,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				}
 			},
-			getWorkers: async () => {
+			getUserWorkers: async () => {
 				try {
 					const response = await fetch(`${process.env.BACKEND_URL}/api/user/workers`, {
 						method: 'GET',
@@ -312,6 +312,22 @@ const getState = ({ getStore, getActions, setStore }) => {
 				}
 			},
 
+			getWorkers: async () => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/workers`, {
+						method: 'GET',
+					});
+					if (response.ok) {
+						const data = await response.json();
+						return data;
+					} else {
+						return response.status
+					}
+				} catch (error) {
+					console.log(error);
+
+				}
+			},
 			editUser: async (id, user) => {
 				try {
 					const response = await fetch(`${process.env.BACKEND_URL}/api/user/${id}`, {
