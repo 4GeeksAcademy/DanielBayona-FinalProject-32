@@ -136,7 +136,8 @@ class Task(db.Model):
             "desc" : self.desc,
             "worker_id" : self.worker_id,
             "status" : self.status,
-            "date" : self.date
+            "date" : self.date,
+            "work": self.work
         }
 
 class Issue(db.Model):

@@ -20,7 +20,7 @@ import { width } from "@fortawesome/free-brands-svg-icons/fa42Group";
 const Home = () => {
     const { store, actions } = useContext(Context)
     const [company, setCompany] = useState([]);
-    const [issues, setIssues] = useState([]);
+    const [tasks, setTasks] = useState([]);
     const [workers, setWorkers] = useState([]);
     const [view, setView] = useState('tasks');
     const navigate = useNavigate();
@@ -34,12 +34,12 @@ const Home = () => {
         }
     }
 
-    const getIssues = async () => {
-        const response = await actions.getBugs();
+    const getTasks = async () => {
+        const response = await actions.getTasks();
         if (response == 422 || response == 401) {
             actions.logout()
         } else {
-            setIssues(response)
+            setTasks(response)
         }
     }
 
@@ -53,7 +53,7 @@ const Home = () => {
     }
     const changeOption = () => {
         if (view == 'tasks') {
-            getIssues()
+            getTasks()
         } else if (view == 'companies') {
             getCompanies()
         } else if (view == 'workers') {
@@ -148,14 +148,14 @@ const Home = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {view === 'tasks' && issues.map((issue) => (
-                            <tr key={issue.id}>
-                                <td>{issue.name}</td>
+                        {view === 'tasks' && tasks.map((task) => (
+                            <tr key={task.id}>
+                                <td>{task.name}</td>
                                 <td>
-                                    <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target={`#modal-${issue.id}`}>
+                                    <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target={`#modal-${task.id}`}>
                                         <FontAwesomeIcon icon={faCircleInfo} />
                                     </button>
-                                    <div className="modal fade" id={`modal-${issue.id}`} tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div className="modal fade" id={`modal-${task.id}`} tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div className="modal-dialog d-flex justify-content-center modal-xl">
                                             <div className="modal-content d-flex justify-content-center">
                                                 <div className="modal-header">
@@ -168,18 +168,21 @@ const Home = () => {
                                                             <td className="border" style={{ width: "100%" }}>
                                                                 <img
                                                                     className="img-fluid"
-                                                                    src={issue.proof || "https://static.vecteezy.com/system/resources/thumbnails/002/387/693/small_2x/user-profile-icon-free-vector.jpg"}
+                                                                    src={task.work || "https://static.vecteezy.com/system/resources/thumbnails/002/387/693/small_2x/user-profile-icon-free-vector.jpg"}
                                                                     alt="User profile"
                                                                 />
                                                                 <hr />
                                                                 <h2 className="fs-5 fw-bold">Name:</h2>
-                                                                <p className="fs-3">{`${issue.name}`}</p>
+                                                                <p className="fs-3">{`${task.name}`}</p>
                                                                 <hr />
                                                                 <h2 className="fs-5 fw-bold">Description:</h2>
-                                                                <p className="fs-3">{`Description: ${issue.desc}`}</p>
+                                                                <p className="fs-3">{`Description: ${task.desc}`}</p>
                                                                 <hr />
                                                                 <h2 className="fs-5 fw-bold">Status:</h2>
-                                                                <p className="fs-3">{`${issue.status}`}</p>
+                                                                <p className="fs-3">{`${task.status}`}</p>
+                                                                <hr />
+                                                                <h2 className="fs-5 fw-bold">Date:</h2>
+                                                                <p className="fs-3">{`${task.date}`}</p>
                                                             </td>
                                                         </tr>
                                                     </table>
