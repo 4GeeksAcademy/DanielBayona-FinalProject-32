@@ -512,10 +512,16 @@ def get_workers():
 
 @api.route('/worker/<int:id>', methods=["DELETE"])
 def delete_worker(id):
-    worker = Worker()
     try:
-        worker = worker.query.filter_by(id=id).first()
+        worker = Worker.query.filter_by(id=id).first()
+        
         if worker:
+            if worker.user_id:
+                user = User.query.get(worker.user_id)
+                if user:
+                    user.is_assigned = False
+                    db.session.add(user)
+            
             db.session.delete(worker)
             db.session.commit()
             return jsonify({'message': 'Worker has been deleted successfully'}), 200
@@ -523,7 +529,8 @@ def delete_worker(id):
             return jsonify({'message': 'Worker not found'}), 404
     except Exception as error:
         print(error.args)
-        return jsonify({'message': f'Error deleting Worker: {error}'}),400
+        return jsonify({'message': f'Error deleting Worker: {error}'}), 400
+
 
 @api.route('/worker/<int:id>', methods=["PUT"])
 def update_worker(id):

@@ -82,6 +82,27 @@ const Home = () => {
         });
     }
 
+    const deleteWorker = (id) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you want to delete this Company?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No, cancel!',
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const success = await actions.deleteWorker(id);
+                if (success) {
+                    Swal.fire('Deleted!', 'Company has been deleted.', 'success');
+                    setWorkers(company.filter(company => company.id !== id));
+                } else {
+                    Swal.fire('Error!', 'There was a problem deleting the Company.', 'error');
+                }
+            }
+        });
+    }
+
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -98,7 +119,7 @@ const Home = () => {
             cancelButtonText: 'No, cancel!',
         }).then((result) => {
             if (result.isConfirmed) {
-                navigate(`/supervisor/editCompany/${id}`);
+                navigate(`/supervisor/editWorker/${id}`);
             }
         });
     }
@@ -252,17 +273,23 @@ const Home = () => {
                                                                 <h2 className="fs-5 fw-bold">Name:</h2>
                                                                 <p className="fs-3">{`${worker.name}`}</p>
                                                                 <hr />
+                                                                <h2 className="fs-5 fw-bold">Last name:</h2>
+                                                                <p className="fs-3">{`${worker.last_name}`}</p>
+                                                                <hr />
                                                                 <h2 className="fs-5 fw-bold">Mail:</h2>
                                                                 <p className="fs-3">{`${worker.mail}`}</p>
                                                                 <hr />
                                                                 <h2 className="fs-5 fw-bold">Address:</h2>
-                                                                <p className="fs-3">{`${worker.address}`}</p>
+                                                                <p className="fs-3">{`${worker.adress}`}</p>
                                                                 <hr />
                                                                 <h2 className="fs-5 fw-bold">Phone:</h2>
                                                                 <p className="fs-3">{`${worker.phone}`}</p>
                                                                 <hr />
                                                                 <h2 className="fs-5 fw-bold">Identification:</h2>
                                                                 <p className="fs-3">{`${worker.identification}`}</p>
+                                                                <hr />
+                                                                <h2 className="fs-5 fw-bold">Position:</h2>
+                                                                <p className="fs-3">{`${worker.position}`}</p>
                                                             </td>
                                                         </tr>
                                                     </table>
