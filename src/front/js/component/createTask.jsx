@@ -45,6 +45,7 @@ const CreateTaskForm = () => {
         formData.append("user_id", store.token.user_id);
         formData.append("work", task.work);
         formData.append("date",task.date)
+        formData.append("company", task.company)
 
         const response = actions.createTask(formData);
         console.log("sirvo");
