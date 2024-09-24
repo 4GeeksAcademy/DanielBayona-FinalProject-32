@@ -395,6 +395,27 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false
 				}
 			},
+			editWorker: async (id, worker) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/worker/${id}`, {
+						method: "PUT",
+						headers: {
+							"Authorization": `Bearer ${getStore().token}`,
+						},
+						body: worker
+					});
+					if (response.ok) {
+						getActions().getWorkers();
+						return true;
+					} else {
+						console.log('error while updating worker');
+						return false
+					}
+				} catch (error) {
+					console.log(error);
+					return false
+				}
+			},
 			companyInfo: async (id) => {
 				try {
 					const response = await fetch(`${process.env.BACKEND_URL}/api/company/${id}`, {
@@ -462,6 +483,28 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error);
 				}
 			},
+			workerInfo: async (id) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/worker/${id}`, {
+						method: 'GET',
+						headers: {
+							"Authorization": `Bearer ${getStore().token}`,
+							"Content-Type": "application/json"
+						}
+					});
+					if (response.ok) {
+						const data = await response.json()
+						return data
+					} else {
+						const errorData = await response.json()
+						console.log("Error fetching issue:", errorData);
+						return response.status;
+					}
+				} catch (error) {
+					console.log(error);
+
+				}
+			},
 			deleteUser: async (id) => {
 				try {
 					const response = await fetch(`${process.env.BACKEND_URL}/api/user/${id}`, {
@@ -506,6 +549,23 @@ const getState = ({ getStore, getActions, setStore }) => {
 						return true;
 					} else {
 						console.log('error while deleting issue');
+						return false
+					}
+				} catch (error) {
+					console.log(error);
+					return false
+				}
+			},
+			deleteWorker: async (id) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/worker/${id}`, {
+						method: "DELETE"
+					});
+					if (response.ok) {
+						getActions().getWorkers();
+						return true;
+					} else {
+						console.log('error while deleting worker');
 						return false
 					}
 				} catch (error) {
