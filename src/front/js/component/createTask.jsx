@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Context } from "../store/appContext";
 import { useNavigate } from "react-router-dom";
 import Logo from "../../img/Logo.png";
@@ -10,14 +10,15 @@ const initialState = {
     "user_id": "",
     "desc": "",
     "work": "",
-    "date" : "",
-    "company" : ""
+    "date": "",
+    "company": ""
 }
 
 const CreateTaskForm = () => {
     const { store, actions } = useContext(Context);
     const [task, setTask] = useState(initialState);
     const [workPreview, setWorkPreview] = useState("");
+    const [companies, setCompanies] = useState([]);
 
     const handleChange = (event) => {
         const { name, value, files } = event.target;
@@ -44,8 +45,8 @@ const CreateTaskForm = () => {
         formData.append("desc", task.desc);
         formData.append("user_id", store.token.user_id);
         formData.append("work", task.work);
-        formData.append("date",task.date)
-        formData.append("company", task.company)
+        formData.append("date", task.date)
+        formData.append("company", task.company);
 
         const response = actions.createTask(formData);
         console.log("sirvo");
@@ -77,6 +78,14 @@ const CreateTaskForm = () => {
                 }
             })
     };
+
+    const fetchCompanies = async () => {
+        const response = await actions.getCompanies();
+        setCompanies(response);
+    };
+    useEffect(() => {
+        fetchCompanies();
+    }, []);
 
     return (
         <div style={{ display: "flex", flexDirection: "column", height: "100vh", marginRight: "100px" }}>
@@ -134,13 +143,20 @@ const CreateTaskForm = () => {
                     </label>
                     <label style={{ display: "flex", flexDirection: "column", marginBottom: "10px" }}>
                         Company:
-                        <input
+                        <select
                             name="company"
                             type="text"
-                            className="form-control"
+                            className="form-select"
                             value={task.company}
                             onChange={handleChange}
-                        />
+                        >
+                            <option value="">Select Company</option>
+                            {companies.map((company, index) => (
+                                <option key={index} value={company.id}>
+                                    {company.name}
+                                </option>
+                            ))}
+                        </select>
                     </label>
                     <label style={{ display: "flex", flexDirection: "column", marginBottom: "10px" }}>
                         Date:

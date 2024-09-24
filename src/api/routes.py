@@ -693,15 +693,15 @@ def update_company(id):
 @api.route("/task", methods=["GET"])
 def  get_tasks():
     tasks= Task()
-    tasks= tasks.query.all
+    tasks= tasks.query.all()
     all_tasks =  list(map(lambda x:x.serialize(), tasks))
     return jsonify(all_tasks)
 
-@api.route('/task/int<int:id>', methods=["GET"])
+@api.route('/task/<int:id>', methods=["GET"])
 def get_task(id):
     task= Task()
     try:
-        task= task.query.filter_by(id = id).first
+        task= task.query.filter_by(id = id).first()
         return (task.serialize())
     except Exception as error:
         return jsonify({"message": f"Error at finding task{error}"}), 400
@@ -725,7 +725,7 @@ def create_task():
     name = form_data.get('name')
     desc = form_data.get('desc')
     work = data_files.get("work") 
-    company = data_files.get('company')
+    company = form_data.get('company')
     date = form_data.get('date')
 
     result_cloud = uploader.upload(work)

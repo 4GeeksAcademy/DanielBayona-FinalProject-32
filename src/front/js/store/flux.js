@@ -618,6 +618,46 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return { 'error': 'unexpected error' };
 				}
 			},
+			getTasks: async () => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/task`, {
+						method: "GET",
+					});
+					if (response.ok) {
+						const data = await response.json();
+						return data;
+					} else {
+						return response.status
+					}
+				} catch (error) {
+					console.log(error);
+
+				}
+			},
+			getInfoTask: async (id) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/task/${id}`, {
+						method: "GET",
+						headers: {
+							"Authorization": `Bearer ${getStore().token}`,
+							"Content-Type": "application/json"
+						}
+					});
+					if (response.ok) {
+						const data = await response.json();
+						return data
+					} else {
+						const errorData = await response.json();
+						console.log("Error fetching tasks", errorData);
+						return response.status
+					}
+				} catch (error) {
+					console.log(error);
+
+				}
+			}
+
+
 		}
 
 	}
