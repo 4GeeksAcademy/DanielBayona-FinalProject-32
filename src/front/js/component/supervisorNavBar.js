@@ -10,6 +10,7 @@ import {
     faUserGroup,
     faPen,
     faRightFromBracket,
+    faTasks,
 } from "@fortawesome/free-solid-svg-icons";
 import "../../styles/adminNavBar.css";
 
@@ -106,6 +107,23 @@ export const SuperVisorNavBar = () => {
                             >
                                 <FontAwesomeIcon icon={faPen} className="pe-2" />
                                 CREATE COMPANY
+                            </NavLink>
+                        </li>
+                        <li
+                            className={`nav-item ${activeItem === 3 ? "active" : ""}`}
+                            onClick={() => handleChangeColor(3)}
+                        >
+                            <NavLink
+                                end
+                                className={({ isActive }) =>
+                                    isActive
+                                        ? "nav-link active transition text-white fst-italic fw-bolder"
+                                        : "nav-link inactive transition text-dark fst-italic fw-bolder"
+                                }
+                                to="/supervisor/CreateTask "
+                            >
+                                <FontAwesomeIcon icon={faTasks} className="pe-2" />
+                                CREATE TASKS
                             </NavLink>
                         </li>
                         <li className="nav-item bottom-item">

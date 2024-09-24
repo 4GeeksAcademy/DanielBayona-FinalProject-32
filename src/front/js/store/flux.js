@@ -25,7 +25,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 		},
 		actions: {
-			// Use getActions to call a function within a fuction
 			login: async (user) => {
 				try {
 					const response = await fetch(`${process.env.BACKEND_URL}/api/login`, {
@@ -572,7 +571,24 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error);
 					return false
 				}
-			}
+			},
+			createTask: async (task) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/task`, {
+						method: 'POST',
+						"headers": {
+							"Authorization": `Bearer ${getStore().token}`
+						},
+						body: task
+					})
+
+					return response.status
+				}
+				catch (error) {
+					console.log(error);
+					return { 'error': 'unexpected error' };
+				}
+			},
 		}
 
 	}
