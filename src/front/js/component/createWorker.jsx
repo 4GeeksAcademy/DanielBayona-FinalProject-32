@@ -20,7 +20,7 @@ const CreateWorkerForm = () => {
 
   useEffect(() => {
     const fetchWorkers = async () => {
-      await actions.getWorkers();
+      await actions.getUserWorkers();
     };
     fetchWorkers();
   }, []);
@@ -82,7 +82,7 @@ const CreateWorkerForm = () => {
 
       if (res === 201) {
         await actions.assignWorker(user.user_id);
-        await actions.getWorkers();
+        await actions.getUserWorkers();
         setUser(initialState);
         Swal.fire({
           position: "center",

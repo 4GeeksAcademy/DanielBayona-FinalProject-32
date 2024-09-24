@@ -21,6 +21,7 @@ const Home = () => {
     const { store, actions } = useContext(Context)
     const [company, setCompany] = useState([]);
     const [issues, setIssues] = useState([]);
+    const [workers, setWorkers] = useState([]);
     const [view, setView] = useState('tasks');
     const navigate = useNavigate();
 
@@ -42,11 +43,21 @@ const Home = () => {
         }
     }
 
+    const getWorkers = async () => {
+        const response = await actions.getWorkers();
+        if (response == 422 || response == 401) {
+            actions.logout()
+        } else {
+            setWorkers(response);
+        }
+    }
     const changeOption = () => {
         if (view == 'tasks') {
             getIssues()
-        } else {
+        } else if (view == 'companies') {
             getCompanies()
+        } else if (view == 'workers') {
+            getWorkers()
         }
     }
 
@@ -107,14 +118,16 @@ const Home = () => {
                                 <select className="drop rounded-pill" name="optionSelected" onChange={handleChange}>
                                     <option value="tasks">Tasks</option>
                                     <option value="companies">Companies</option>
-                                </select></th>
+                                    <option value="workers">Workers</option>
+                                </select>
+                            </th>
                             <th>Info</th>
                             <th>Edit</th>
                             <th>Delete</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {view == 'tasks' ? issues.map((issue) => (
+                        {view === 'tasks' && issues.map((issue) => (
                             <tr key={issue.id}>
                                 <td>{issue.name}</td>
                                 <td>
@@ -138,16 +151,15 @@ const Home = () => {
                                                                     alt="User profile"
                                                                 />
                                                                 <hr />
-                                                                <h2 class="fs-5 fw-bold">Name:</h2>
+                                                                <h2 className="fs-5 fw-bold">Name:</h2>
                                                                 <p className="fs-3">{`${issue.name}`}</p>
                                                                 <hr />
-                                                                <h2 class="fs-5 fw-bold">Description:</h2>
+                                                                <h2 className="fs-5 fw-bold">Description:</h2>
                                                                 <p className="fs-3">{`Description: ${issue.desc}`}</p>
                                                                 <hr />
-                                                                <h2 class="fs-5 fw-bold">Status:</h2>
+                                                                <h2 className="fs-5 fw-bold">Status:</h2>
                                                                 <p className="fs-3">{`${issue.status}`}</p>
                                                             </td>
-
                                                         </tr>
                                                     </table>
                                                 </div>
@@ -165,7 +177,9 @@ const Home = () => {
                                     <FontAwesomeIcon icon={faTrash} />
                                 </td>
                             </tr>
-                        )) : company.map((company) => (
+                        ))}
+
+                        {view === 'companies' && company.map((company) => (
                             <tr key={company.id}>
                                 <td>{company.name}</td>
                                 <td>
@@ -183,19 +197,19 @@ const Home = () => {
                                                     <table style={{ width: "100%" }}>
                                                         <tr>
                                                             <td className="border" style={{ width: "100%" }}>
-                                                                <h2 class="fs-5 fw-bold">Name:</h2>
+                                                                <h2 className="fs-5 fw-bold">Name:</h2>
                                                                 <p className="fs-3">{`${company.name}`}</p>
                                                                 <hr />
-                                                                <h2 class="fs-5 fw-bold">mail:</h2>
+                                                                <h2 className="fs-5 fw-bold">Mail:</h2>
                                                                 <p className="fs-3">{`${company.mail}`}</p>
                                                                 <hr />
-                                                                <h2 class="fs-5 fw-bold">address:</h2>
-                                                                <p className="fs-3">{`${company.adress}`}</p>
+                                                                <h2 className="fs-5 fw-bold">Address:</h2>
+                                                                <p className="fs-3">{`${company.address}`}</p>
                                                                 <hr />
-                                                                <h2 class="fs-5 fw-bold">phone:</h2>
+                                                                <h2 className="fs-5 fw-bold">Phone:</h2>
                                                                 <p className="fs-3">{`${company.phone}`}</p>
                                                                 <hr />
-                                                                <h2 class="fs-5 fw-bold">identification:</h2>
+                                                                <h2 className="fs-5 fw-bold">Identification:</h2>
                                                                 <p className="fs-3">{`${company.identification}`}</p>
                                                             </td>
                                                         </tr>
@@ -216,12 +230,64 @@ const Home = () => {
                                 </td>
                             </tr>
                         ))}
-                        { }
+
+                        {view === 'workers' && workers.map((worker) => (
+                            <tr key={worker.id}>
+                                <td>{worker.name}</td>
+                                <td>
+                                    <button type="button" className="btn btn-primary" data-bs-toggle="modal" data-bs-target={`#modal-${worker.id}`}>
+                                        <FontAwesomeIcon icon={faCircleInfo} className="fa-lg" />
+                                    </button>
+                                    <div className="modal fade" id={`modal-${worker.id}`} tabIndex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div className="modal-dialog d-flex justify-content-center modal-lg">
+                                            <div className="modal-content d-flex justify-content-center">
+                                                <div className="modal-header">
+                                                    <h5 className="modal-title" id="exampleModalLabel">Worker Info</h5>
+                                                    <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div className="modal-body">
+                                                    <table style={{ width: "100%" }}>
+                                                        <tr>
+                                                            <td className="border" style={{ width: "100%" }}>
+                                                                <h2 className="fs-5 fw-bold">Name:</h2>
+                                                                <p className="fs-3">{`${worker.name}`}</p>
+                                                                <hr />
+                                                                <h2 className="fs-5 fw-bold">Mail:</h2>
+                                                                <p className="fs-3">{`${worker.mail}`}</p>
+                                                                <hr />
+                                                                <h2 className="fs-5 fw-bold">Address:</h2>
+                                                                <p className="fs-3">{`${worker.address}`}</p>
+                                                                <hr />
+                                                                <h2 className="fs-5 fw-bold">Phone:</h2>
+                                                                <p className="fs-3">{`${worker.phone}`}</p>
+                                                                <hr />
+                                                                <h2 className="fs-5 fw-bold">Identification:</h2>
+                                                                <p className="fs-3">{`${worker.identification}`}</p>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                                <div className="modal-footer">
+                                                    <button type="button" className="btn btn-taskyist" data-bs-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <FontAwesomeIcon icon={faPenSquare} onClick={() => handleEditClick(worker.id)} className="btn btn-success fa-lg" />
+                                </td>
+                                <td>
+                                    <FontAwesomeIcon icon={faTrash} onClick={() => deleteWorker(worker.id)} className="btn btn-danger fa-lg" />
+                                </td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </section>
         </div>
     );
+
 };
 
 
