@@ -164,9 +164,7 @@ const EditUserForm = () => {
                             value={user.role}
                             onChange={handleChange}
                         >
-                            <option value="worker">Worker</option>
-                            <option value="supervisor">Supervisor</option>
-                            <option value="administrator">Administrator</option>
+                            <option value="worker">{user.role}</option>
                         </select>
                     </label>
                 </div>
