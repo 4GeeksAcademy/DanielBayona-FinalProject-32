@@ -17,6 +17,8 @@ import SupervisorHome from "./pages/supervisorHome.jsx";
 import SupervisorEditCompany from "./pages/editCompany.jsx";
 import AdminEditIssue from "./pages/editIssue.jsx"
 import SupervisorEditWorker from "./pages/editWorker.jsx";
+import SupervisorCreateTask from "./pages/supervisorCreateTask.jsx"
+
 
 
 import injectContext from "./store/appContext";
@@ -51,6 +53,7 @@ const Layout = () => {
                         <Route path="/supervisor/editCompany/:id" element={<SupervisorEditCompany />} />
                         <Route path="/admin/editIssue/:id" element={<AdminEditIssue />} />
                         <Route path="/supervisor/editWorker/:id" element={<SupervisorEditWorker />} />
+                        <Route path="/supervisor/CreateTask" element={<SupervisorCreateTask />} />
                     </Routes>
                 </ScrollToTop>
             </BrowserRouter>

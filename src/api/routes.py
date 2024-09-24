@@ -714,12 +714,13 @@ def create_task():
 
     user_id = get_jwt_identity()
     supervisor_id= None
+    worker_id = None
     uploader_table= Worker.query.filter_by(user_id= user_id).one_or_none()
     if uploader_table is None:
         uploader_table = Supervisor.query.filter_by(user_id= user_id ).one_or_none()
-        supervisor_id = uploader_table
+        supervisor_id = uploader_table.id
     else: 
-        worker_id = uploader_table
+        worker_id = uploader_table.id
 
     name = form_data.get('name')
     desc = form_data.get('desc')
@@ -736,23 +737,16 @@ def create_task():
     if task is not None:
         return jsonify({'Message': 'Task already exists'}), 400
 
-    task = task(
-        name = name,
-        desc = desc,
-        work = work_url,
-        work_id = work_id,
-        date = date
+    task = Task(
+        name=name,
+        desc=desc,
+        work=work_url,
+        work_id=work_id,
+        date=date,
+        supervisor_id=supervisor_id if supervisor_id is not None else None,
+        worker_id=worker_id if worker_id is not None else None
     )
-    if supervisor_id is not None:
-        task = task(
-            supervisor_id = supervisor_id
-        )
-    else:
-        task = task(
-            worker_id = worker_id
-        )
-
-
+    
     try:
         db.session.add(task)
         db.session.commit()
