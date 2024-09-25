@@ -6,6 +6,7 @@ from api.models import db, User, Issue, Supervisor, Worker, Company, Task
 from sqlalchemy import delete, update
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
+from api.models import roleEnum 
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from api.utils import set_password, check_password
 from base64 import b64encode
@@ -209,6 +210,36 @@ def get_profile():
         "pic": user.pic or None,
         "username": user.username
     }
+    
+    if user.role == roleEnum.supervisor:
+        supervisor = Supervisor.query.filter_by(user_id = user.id).first()
+        if supervisor:
+            user_data.update({
+            "id": supervisor.id,
+            "name": supervisor.name,
+            "last_name": supervisor.last_name,
+            "username": supervisor.user.username,
+            "position": supervisor.position,
+            "mail" : supervisor.mail,
+            "adress" : supervisor.adress,
+            "phone" : supervisor.phone,
+            "identification" : supervisor.identification
+            })
+    elif user.role == roleEnum.worker:
+        worker = Worker.query.filter_by(user_id = user.id).first()
+        if worker:
+            user_data.update({
+            "id": worker.id,
+            "name": worker.name,
+            "last_name": worker.last_name,
+            "username": worker.user.username,
+            "position": worker.position,
+            "mail" : worker.mail,
+            "adress" : worker.adress,
+            "phone" : worker.phone,
+            "identification" : worker.identification
+            })
+        
 
     return jsonify(user_data), 200
 
