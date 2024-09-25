@@ -6,7 +6,7 @@ import { BackendURL } from "./component/backendURL";
 
 
 import Login from "./pages/login.jsx";
-import Worker from "./pages/worker.jsx"
+import Workerhome from "./pages/workerHome.jsx";
 import AdminCreateUser from "./pages/adminCreateUser.jsx";
 import AdminCreateIssue from "./pages/adminCreateIssue.jsx";
 import SupervisorCreateWorker from "./pages/supervisorCreateWorker.jsx";
@@ -19,6 +19,7 @@ import AdminEditIssue from "./pages/editIssue.jsx"
 import SupervisorEditWorker from "./pages/editWorker.jsx";
 import SupervisorCreateTask from "./pages/supervisorCreateTask.jsx"
 import SupervisorEditTask from "./pages/editTask.jsx";
+import WorkerCreateTask from "./pages/workerCreateTask.jsx";
 
 
 import injectContext from "./store/appContext";
@@ -43,7 +44,7 @@ const Layout = () => {
                         <Route path="/login" element={<Login />} />
                         <Route path="/admin" element={<AdminGetUsers />} />
                         <Route path="/supervisor" element={<SupervisorHome />} />
-                        <Route path="/worker" element={<Worker />} />
+                        <Route path="/worker" element={<Workerhome />} />
                         <Route path="/admin/CreateUser" element={<AdminCreateUser />} />
                         <Route path="/admin/CreateIssue" element={<AdminCreateIssue />} />
                         <Route path="/supervisor/CreateWorker" element={<SupervisorCreateWorker />} />
@@ -55,6 +56,8 @@ const Layout = () => {
                         <Route path="/supervisor/editWorker/:id" element={<SupervisorEditWorker />} />
                         <Route path="/supervisor/CreateTask" element={<SupervisorCreateTask />} />
                         <Route path="/supervisor/editTask/:id" element={<SupervisorEditTask />} />
+                        <Route path="/worker/CreateTask" element={<WorkerCreateTask />} />
+
                     </Routes>
                 </ScrollToTop>
             </BrowserRouter>

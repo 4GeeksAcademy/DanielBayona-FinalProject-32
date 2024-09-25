@@ -851,6 +851,17 @@ def delete_task(id):
         print(error.args)
         db.session.rollback()
         return jsonify({"message": f"Error at deleting task {error}"}), 400
+
+@api.route('/task/worker', methods=["GET"])
+@jwt_required()
+def get_worker_task():
+    try:
+        worker = Worker.query.filter_by(user_id = get_jwt_identity()).first()
+        tasks= Task.query.filter_by(worker_id = worker.id).all()
+        all_tasks =  list(map(lambda x:x.serialize(), tasks))
+        return jsonify(all_tasks)
+    except Exception as error:
+        return jsonify({"message": f"Error at finding task{error}"}), 400
     
     
     
