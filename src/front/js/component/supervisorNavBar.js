@@ -15,21 +15,13 @@ import {
 import "../../styles/adminNavBar.css";
 
 export const SuperVisorNavBar = () => {
-    const navigate = useNavigate()
-    const { store, actions } = useContext(Context);
+
     const [activeItem, setActiveItem] = useState(0);
 
     const handleChangeColor = (index) => {
         setActiveItem(index);
     };
 
-    const handleLogout = () => {
-        const response = actions.logout();
-
-        if (response) {
-            navigate("/");
-        }
-    }
 
     return (
         <nav className="navbar nav-bar-left navbar-left d-flex flex-column navbar-expand-lg">
@@ -112,17 +104,6 @@ export const SuperVisorNavBar = () => {
                                 <FontAwesomeIcon icon={faPen} className="pe-2" />
                                 CREATE COMPANY
                             </NavLink>
-                        </li>
-                        <li className="nav-item bottom-item">
-                            <a
-                                className="nav-link text-dark fst-italic fw-bolder"
-                                aria-current="page"
-                                onClick={() => handleLogout()}
-                                role="button"
-                            >
-                                <FontAwesomeIcon icon={faRightFromBracket} className="pe-2" />
-                                LOG OUT
-                            </a>
                         </li>
                     </ul>
                 </div>

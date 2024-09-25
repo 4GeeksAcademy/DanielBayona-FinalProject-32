@@ -98,25 +98,25 @@ const AdminCreateSupervisor = () => {
                             <h1 className="modal-title fs-5" id="exampleModalLabel">User Info</h1>
                             <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                           </div>
-                          <div className="modal-body">
+                          <div className="modal-body" modal-body d-flex justify-content-center align-items-center flex-column>
                             <img
                               src={profilePic || localStorage.getItem('profilePic')}
                               alt="Profile"
                               className="img-fluid"
                               style={{ width: "100px", height: "100px" }}
                             />
-                            <p>Username: {user?.username || localStorage.getItem('username')}</p>
-                            <p>Role: {user?.role || localStorage.getItem('role')}</p>
+                            <p> <strong>Username:</strong> {user?.username || localStorage.getItem('username')}</p>
+                            <p><strong>Role:</strong> {user?.role || localStorage.getItem('role')}</p>
                           </div>
                           <div className="modal-footer">
                             <a
-                              className="nav-link text-dark fst-italic fw-bolder"
+                              className="nav-link text-danger fst-italic fw-bolder"
                               aria-current="page"
                               onClick={() => handleLogout()}
                               data-bs-dismiss="modal"
                               role="button"
                             >
-                              <FontAwesomeIcon icon={faRightFromBracket} className="pe-2" />
+                              <FontAwesomeIcon icon={faRightFromBracket} className="pe-2 text-danger" />
                               LOG OUT
                             </a>
                           </div>

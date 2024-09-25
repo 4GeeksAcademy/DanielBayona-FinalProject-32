@@ -99,8 +99,16 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 						setStore({
 							id: data.id || null,
-							user: data.role || null,
-							pic: data.pic || null
+							username: data.username || null,
+							role: data.role || null,
+							pic: data.pic || null,
+							name: data.name || null,
+							last_name: data.last_name || null,
+							position: data.position || null,
+							mail: data.mail || null,
+							address: data.address || null,
+							phone: data.phone || null,
+							identification: data.identification || null,
 						});
 						localStorage.setItem('user', JSON.stringify(data));
 						return data;
