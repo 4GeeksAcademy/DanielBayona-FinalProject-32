@@ -60,42 +60,18 @@ export const WorkerNavBar = () => {
               className={`nav-item ${activeItem === 1 ? "active" : ""}`}
               onClick={() => handleChangeColor(1)}
             >
-              <a
-                className={`nav-link fst-italic fw-bolder ${activeItem === 1 ? "text-white" : "text-dark"
-                  }`}
-                aria-current="page"
-                href="#"
-              >
-                <FontAwesomeIcon icon={faList} className="pe-2" /> TASKS
-              </a>
-            </li>
-            <li
-              className={`nav-item ${activeItem === 2 ? "active" : ""}`}
-              onClick={() => handleChangeColor(2)}
-            >
-              <a
-                className={`nav-link fst-italic fw-bolder ${activeItem === 2 ? "text-white" : "text-dark"
-                  }`}
-                aria-current="page"
-                href="#"
-              >
-                <FontAwesomeIcon icon={faUserGroup} className="pe-2" />
-                COMPLETED TASKS
-              </a>
-            </li>
-            <li
-              className={`nav-item ${activeItem === 3 ? "active" : ""}`}
-              onClick={() => handleChangeColor(3)}
-            >
-              <a
-                className={`nav-link fst-italic fw-bolder ${activeItem === 3 ? "text-white" : "text-dark"
-                  }`}
-                aria-current="page"
-                href="#"
-              >
-                <FontAwesomeIcon icon={faPen} className="pe-2" />
-                EDIT TASKS
-              </a>
+               <NavLink
+                  end
+                  className={({ isActive }) =>
+                    isActive
+                      ? "nav-link active transition text-white fst-italic fw-bolder"
+                      : "nav-link inactive transition text-dark fst-italic fw-bolder"
+                  }
+                  to="/worker/CreateTask"
+                >
+                  <FontAwesomeIcon icon={faTasks} className="pe-2" />
+                    CREATE TASKS
+                  </NavLink>
             </li>
             <li className="nav-item bottom-item">
               <a

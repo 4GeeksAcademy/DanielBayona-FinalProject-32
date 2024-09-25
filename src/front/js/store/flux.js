@@ -702,6 +702,28 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false
 				}
 			},
+			getWorkerTasks: async () => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/task/worker`, {
+						method: "GET",
+						headers: {
+							"Authorization": `Bearer ${getStore().token}`,
+							"Content-Type": "application/json"
+						}
+					});
+					if (response.ok) {
+						const data = await response.json();
+						return data
+					} else {
+						const errorData = await response.json();
+						console.log("Error fetching tasks", errorData);
+						return response.status
+					}
+				} catch (error) {
+					console.log(error);
+
+				}
+			},
 		}
 	}
 };
