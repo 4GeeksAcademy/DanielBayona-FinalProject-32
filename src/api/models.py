@@ -120,9 +120,9 @@ class Task(db.Model):
     status = db.Column(db.String(254), nullable=False, default="To be reviewed")
     date = db.Column(db.Date, nullable=False)
     worker_id = db.Column(db.Integer, db.ForeignKey("worker.id"))
-    worker_table = db.relationship("Worker", backref="task")
+    worker = db.relationship("Worker", backref="task") 
     supervisor_id = db.Column(db.Integer, db.ForeignKey("supervisor.id"))
-    supervisor_table = db.relationship("Supervisor", backref="task")
+    supervisor= db.relationship("Supervisor", backref="task")
     company = db.Column(db.Integer, db.ForeignKey("company.id"), nullable=False)
     company_table = db.relationship("Company", backref="task")
 
@@ -135,6 +135,7 @@ class Task(db.Model):
             "name": self.name,
             "desc" : self.desc,
             "worker_id" : self.worker_id,
+            "supervisor_id": self.supervisor_id,
             "status" : self.status,
             "date" : self.date,
             "work": self.work,

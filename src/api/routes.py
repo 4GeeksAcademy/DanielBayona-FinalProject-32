@@ -809,10 +809,17 @@ def update_task(id):
 def delete_task(id):
     task = Task()
     try:
-        task = delete(task).where(id = id)
-        db.session.commit()
-        return jsonify({"message": "Task has been deleted successfully"}, 201)
+        task = task.query.filter_by(id = id).first()
+        if task:
+            db.session.delete(task)
+            db.session.commit()
+            return jsonify({"message": "Task has been deleted successfully"}), 200
+        else:
+                return jsonify({'message': 'Task not found'}), 404
     except Exception as error:
         print(error.args)
         db.session.rollback()
         return jsonify({"message": f"Error at deleting task {error}"}), 400
+    
+    
+    
