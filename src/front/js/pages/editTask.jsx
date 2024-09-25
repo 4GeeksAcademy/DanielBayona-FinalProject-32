@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext.js";
 import { Navigate, useParams, useNavigate } from "react-router-dom";
-import Sidebar from "../../js/component/Sidebar.jsx";
-import Swal from 'sweetalert2'
+import SupervisorSideBar from "../../js/component/supervisorNavBar.js";
+import Swal from 'sweetalert2';
 
 const initialState = {
     "name": "",
@@ -12,7 +12,9 @@ const initialState = {
     "review": "",
     "status": "",
     "date": "",
-    "company": ""
+    "company": "",
+    "worker_id": "",
+    "supervisor_id": ""
 }
 
 const EditTaskForm = () => {
@@ -25,9 +27,22 @@ const EditTaskForm = () => {
     const param = useParams();
     const navigate = useNavigate();
 
-    useEffect(() => {
-        console.log("URL Param ID:", param.id); 
+    const fetchCompanies = async () => {
+        const response = await actions.getCompanies();
+        setCompanies(response);
+    };
 
+    const fetchWorkers = async () => {
+        const response = await actions.getWorkers();
+        setWorkers(response);
+    };
+
+    useEffect(() => {
+        fetchCompanies();
+        fetchWorkers();
+    }, []);
+
+    useEffect(() => {
         const fetchTask = async () => {
             await searchTask(param.id);
         };
@@ -35,38 +50,42 @@ const EditTaskForm = () => {
     }, [param.id]);
 
     const searchTask = async (id) => {
-
-        console.log("Fetching Task with ID:", id);
-
-        const foundTask = await actions.taskInfo(id);
-
-        console.log("Found Task:", foundTask);
+        const foundTask = await actions.getInfoTask(id);
 
         if (foundTask) {
-            setTask({
+            const updatedTask = {
                 id: foundTask.id,
                 name: foundTask.name,
                 desc: foundTask.desc,
-                work: null,
-                currentWork: foundTask.Work,
+                work: foundTask.work,
                 review: foundTask.review,
                 status: foundTask.status,
                 date: foundTask.date,
-                worker_id: foundTask.worker_id
-            });
+                company: foundTask.company,
+                worker_id: foundTask.worker_id,
+                supervisor_id: foundTask.supervisor_id
+            };
+            setTask(updatedTask);
             setWorkPreview(foundTask.work);
         }
     };
 
     const handleChange = (event) => {
         const { name, value, files } = event.target;
+
+
         if (name === "work") {
             const file = files[0];
-            setTask(prevTask => ({
-                ...prevTask,
-                work: file
-            }));
-            setWorkPreview(URL.createObjectURL(file));
+            if (file) {
+                setTask(prevTask => ({
+                    ...prevTask,
+                    work: file
+                }));
+                setWorkPreview(URL.createObjectURL(file));
+                console.log("Work file set:", file);
+            } else {
+                console.log("No file selected");
+            }
         } else {
             setTask(prevTask => ({
                 ...prevTask,
@@ -79,8 +98,6 @@ const EditTaskForm = () => {
         event.preventDefault();
 
 
-        console.log("Submitting Task:", task);
-
         const formData = new FormData();
         formData.append("name", task.name);
         formData.append("desc", task.desc);
@@ -88,17 +105,24 @@ const EditTaskForm = () => {
         formData.append("status", task.status);
         formData.append("date", task.date);
         formData.append("company", task.company);
-        formData.append("worker_id", task.worker_id)
+
+
+        if (task.worker_id) {
+            formData.append("worker_id", task.worker_id);
+        } else if (task.supervisor_id) {
+            formData.append("supervisor_id", task.supervisor_id);
+        }
+
+        console.log("Worker ID before submitting:", task.worker_id);
 
         if (!task.work) {
-            formData.append("Work", task.currentWork);
+            formData.append("work", task.currentWork);
         } else {
-            formData.append("Work", task.work);
+            formData.append("work", task.work);
         }
 
         try {
             console.log("Submitting form for Task ID:", task.id);
-
             let response = await actions.editTask(task.id, formData);
 
             if (response) {
@@ -118,26 +142,9 @@ const EditTaskForm = () => {
                     text: "There was an error while editing the task. Please contact the admin.",
                 });
             }
-
         } catch (error) {
-            console.log("Error submitting task:", error);
+            console.error("Error submitting task:", error);
         }
-
-        const fetchCompanies = async () => {
-            const response = await actions.getCompanies();
-            setCompanies(response);
-        };
-        useEffect(() => {
-            fetchCompanies();
-        }, []);
-
-        const fetchWorkers = async () => {
-            const response = await actions.getWorkers();
-            setWorkers(response);
-        };
-        useEffect(() => {
-            fetchWorkers();
-        }, []);
     };
 
     return (
@@ -163,7 +170,7 @@ const EditTaskForm = () => {
                         <input
                             id="work-upload"
                             type="file"
-                            name="Work"
+                            name="work"
                             accept="image/*"
                             onChange={handleChange}
                             style={{ display: "none" }}
@@ -215,12 +222,10 @@ const EditTaskForm = () => {
                         Company:
                         <select
                             name="company"
-                            type="text"
                             className="form-select"
                             value={task.company}
                             onChange={handleChange}
                         >
-                            <option value="">Select Company</option>
                             {companies.map((company, index) => (
                                 <option key={index} value={company.id}>
                                     {company.name}
@@ -231,16 +236,15 @@ const EditTaskForm = () => {
                     <label style={{ display: "flex", flexDirection: "column", marginBottom: "10px" }}>
                         Worker:
                         <select
-                            name="worker"
-                            type="text"
+                            name="worker_id"
                             className="form-select"
                             value={task.worker_id}
                             onChange={handleChange}
+
                         >
-                            <option value="">Select Worker</option>
                             {workers.map((worker, index) => (
                                 <option key={index} value={worker.id}>
-                                    {worker.id} {worker.name}
+                                    {worker.name}
                                 </option>
                             ))}
                         </select>
@@ -272,6 +276,7 @@ const EditTaskForm = () => {
     );
 };
 
+
 const EditTask = () => {
     return (
         <div className="d-flex justify-content-center align-items-center flex-column pt-5" style={{ backgroundColor: "white" }}>
@@ -289,7 +294,7 @@ const SupervisorEditTask = () => {
                 <Navigate to={"/"} />
             ) : (
                 <>
-                    <Sidebar />
+                    <SupervisorSideBar />
                     <EditTask />
                 </>
             )}

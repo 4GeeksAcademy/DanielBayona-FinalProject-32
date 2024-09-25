@@ -250,10 +250,10 @@ const Home = () => {
                                     </div>
                                 </td>
                                 <td>
-                                    <FontAwesomeIcon icon={faPenSquare} onClick={() => handleEditClickTask(tasks.id)} className="btn btn-success fa-lg" />
+                                    <FontAwesomeIcon icon={faPenSquare} onClick={() => handleEditClickTask(task.id)} className="btn btn-success fa-lg" />
                                 </td>
                                 <td>
-                                    <FontAwesomeIcon icon={faTrash} onClick={() => deleteTask(tasks.id)} className="btn btn-danger fa-lg" />
+                                    <FontAwesomeIcon icon={faTrash} onClick={() => deleteTask(task.id)} className="btn btn-danger fa-lg" />
                                 </td>
                             </tr>
                         ))}
