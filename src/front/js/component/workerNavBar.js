@@ -1,12 +1,12 @@
 import React, { useState, useContext } from "react";
 import { Context } from "../store/appContext";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, NavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faHouse,
   faList,
   faUserGroup,
-  faPen,
+  faTasks,
   faRightFromBracket,
 } from "@fortawesome/free-solid-svg-icons";
 import "../../styles/workerNavBar.css";
@@ -46,32 +46,35 @@ export const WorkerNavBar = () => {
               className={`nav-item ${activeItem === 0 ? "active" : ""}`}
               onClick={() => handleChangeColor(0)}
             >
-              <a
-                className={`nav-link fst-italic fw-bolder ${activeItem === 0 ? "text-white" : "text-dark"
-                  }`}
-                aria-current="page"
-                href="#"
+              <NavLink
+                end
+                className={({ isActive }) =>
+                  isActive
+                    ? "nav-link active transition text-white fst-italic fw-bolder"
+                    : "nav-link inactive transition text-dark fst-italic fw-bolder"
+                }
+                to="/worker"
               >
                 <FontAwesomeIcon icon={faHouse} className="pe-2" />
                 HOME
-              </a>
+              </NavLink>
             </li>
             <li
               className={`nav-item ${activeItem === 1 ? "active" : ""}`}
               onClick={() => handleChangeColor(1)}
             >
-               <NavLink
-                  end
-                  className={({ isActive }) =>
-                    isActive
-                      ? "nav-link active transition text-white fst-italic fw-bolder"
-                      : "nav-link inactive transition text-dark fst-italic fw-bolder"
-                  }
-                  to="/worker/CreateTask"
-                >
-                  <FontAwesomeIcon icon={faTasks} className="pe-2" />
-                    CREATE TASKS
-                  </NavLink>
+              <NavLink
+                end
+                className={({ isActive }) =>
+                  isActive
+                    ? "nav-link active transition text-white fst-italic fw-bolder"
+                    : "nav-link inactive transition text-dark fst-italic fw-bolder"
+                }
+                to="/worker/CreateTask"
+              >
+                <FontAwesomeIcon icon={faTasks} className="pe-2" />
+                CREATE TASKS
+              </NavLink>
             </li>
             <li className="nav-item bottom-item">
               <a
