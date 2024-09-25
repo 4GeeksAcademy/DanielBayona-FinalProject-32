@@ -139,6 +139,42 @@ const Home = () => {
         });
     }
 
+    const handleEditClickTask = (id) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you want to continue to edit this task?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, edit it!',
+            cancelButtonText: 'No, cancel!',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                navigate(`/supervisor/editTask/${id}`);
+            }
+        });
+    }
+
+    const deleteTask = (id) => {
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you want to delete this task?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes!',
+            cancelButtonText: 'No, cancel!',
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                const success = await actions.deleteTask(id);
+                if (success) {
+                    Swal.fire('Deleted!', 'Task has been deleted.', 'success');
+                    setTasks(tasks.filter(task => task.id !== id));
+                } else {
+                    Swal.fire('Error!', 'There was a problem deleting the task.', 'error');
+                }
+            }
+        });
+    }
+
 
     useEffect(() => {
         changeOption()
@@ -214,10 +250,10 @@ const Home = () => {
                                     </div>
                                 </td>
                                 <td>
-                                    <FontAwesomeIcon icon={faPenSquare} />
+                                    <FontAwesomeIcon icon={faPenSquare} onClick={() => handleEditClickTask(tasks.id)} className="btn btn-success fa-lg" />
                                 </td>
                                 <td>
-                                    <FontAwesomeIcon icon={faTrash} />
+                                    <FontAwesomeIcon icon={faTrash} onClick={() => deleteTask(tasks.id)} className="btn btn-danger fa-lg" />
                                 </td>
                             </tr>
                         ))}

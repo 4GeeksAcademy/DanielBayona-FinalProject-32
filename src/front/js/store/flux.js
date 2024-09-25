@@ -655,11 +655,47 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error);
 
 				}
+			},
+			deleteTask: async (id) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/task/${id}`, {
+						method: "DELETE"
+					});
+					if (response.ok) {
+						getActions().getTasks();
+						return true;
+					} else {
+						console.log('error while deleting task');
+						return false
+					}
+				} catch (error) {
+					console.log(error);
+					return false
+				}
+		},
+			editTask: async (id, task) => {
+			try {
+				const response = await fetch(`${process.env.BACKEND_URL}/api/task/${id}`, {
+					method: "PUT",
+					headers: {
+						"Authorization": `Bearer ${getStore().token}`,
+
+					},
+					body: task
+				});
+				if (response.ok) {
+					getActions().getTasks();
+					return true
+				} else {
+					console.log('error while updating issue');
+					return false
+				}
+			} catch (error) {
+				console.log(error);
+				return false
 			}
-
-
+			},
 		}
-
 	}
 };
 
