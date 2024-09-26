@@ -1,14 +1,14 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Context } from "../store/appContext.js";
 import { Navigate, useNavigate } from "react-router-dom";;
-import SuperVisorNavBar from "../component/supervisorNavBar.js";
-import CreateWorker from "../component/createWorker.jsx";
+import WorkerNavBar from "../component/workerNavBar";
+import Home from "../component/workerHome.jsx";
 import defaultPick from "../../img/Imagen1user.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell, faUser, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
 
-const SupervisorCreateWorker = () => {
+const Workerhome = () => {
   const { store, actions } = useContext(Context);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState(null);
@@ -26,7 +26,7 @@ const SupervisorCreateWorker = () => {
       localStorage.setItem('username', userData.username);
       localStorage.setItem('role', userData.role);
 
-      if (userData.role === "supervisor") {
+      if (userData.role === "worker") {
         localStorage.setItem('name', userData.name);
         localStorage.setItem('last_name', userData.last_name);
         localStorage.setItem('position', userData.position);
@@ -103,7 +103,7 @@ const SupervisorCreateWorker = () => {
       ) : (
         <>
           <div className="d-flex bg-light">
-            <nav className="d-flex justify-content-end p-4 w-100 bg-white">
+            <nav className="d-flex justify-content-end p-4 w-100 bg-light">
               <div className="d-flex justify-content-end">
                 {loading ? (
                   <div className="spinner-border text-success" role="status">
@@ -136,7 +136,7 @@ const SupervisorCreateWorker = () => {
                             <p className="pt-4"> <strong>Username:</strong> {user?.username || localStorage.getItem('username')}</p>
                             <p><strong>Role:</strong> {user?.role || localStorage.getItem('role')}</p>
                             <hr />
-                            {user?.role === "supervisor" && (
+                            {user?.role === "worker" && (
                               <>
                                 <p><strong> Name: </strong> {user.name || localStorage.getItem('name')}</p>
                                 <p><strong>Last Name:</strong> {user.last_name || localStorage.getItem('last_name')}</p>
@@ -153,7 +153,7 @@ const SupervisorCreateWorker = () => {
                           </div>
                           <div className="modal-footer">
                             <a
-                              className="nav-link fst-italic fw-bolder text-danger"
+                              className="nav-link fst-italic fw-bolder text-danger "
                               aria-current="page"
                               onClick={() => handleLogout()}
                               data-bs-dismiss="modal"
@@ -171,12 +171,11 @@ const SupervisorCreateWorker = () => {
               </div>
             </nav>
           </div>
-          <SuperVisorNavBar />
-          <CreateWorker />
+          <WorkerNavBar />
+          <Home />
         </>
       )}
     </>
   );
 };
-
-export default SupervisorCreateWorker;
+export default Workerhome;

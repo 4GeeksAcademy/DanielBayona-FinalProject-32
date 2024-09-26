@@ -25,7 +25,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 		},
 		actions: {
-			// Use getActions to call a function within a fuction
 			login: async (user) => {
 				try {
 					const response = await fetch(`${process.env.BACKEND_URL}/api/login`, {
@@ -57,7 +56,7 @@ const getState = ({ getStore, getActions, setStore }) => {
 				setStore({
 					token: null
 				})
-				localStorage.removeItem("token")
+				localStorage.removeItem("access_token")
 				localStorage.removeItem("user")
 
 				return true
@@ -71,9 +70,10 @@ const getState = ({ getStore, getActions, setStore }) => {
 						}
 					})
 					const data = await response.json()
-
+					console.log("Token validation response:", data);
 					if (response.ok) {
 						setStore({
+							id: data.id,
 							user: data.role
 						})
 						localStorage.setItem('user', JSON.stringify(data))
@@ -83,6 +83,42 @@ const getState = ({ getStore, getActions, setStore }) => {
 
 				} catch (error) {
 					console.log(error)
+				}
+			},
+			getUserProfile: async () => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/profile`, {
+						method: "GET",
+						headers: {
+							"Authorization": `Bearer ${getStore().token}`
+						}
+					});
+					const data = await response.json();
+
+					if (response.ok) {
+
+						setStore({
+							id: data.id || null,
+							username: data.username || null,
+							role: data.role || null,
+							pic: data.pic || null,
+							name: data.name || null,
+							last_name: data.last_name || null,
+							position: data.position || null,
+							mail: data.mail || null,
+							address: data.address || null,
+							phone: data.phone || null,
+							identification: data.identification || null,
+						});
+						localStorage.setItem('user', JSON.stringify(data));
+						return data;
+					} else {
+						console.error("Error fetching user data:", data);
+						return null;
+					}
+				} catch (error) {
+					console.log("Network error:", error);
+					return null;
 				}
 			},
 			// SIGNUP / REGISTRO
@@ -395,6 +431,27 @@ const getState = ({ getStore, getActions, setStore }) => {
 					return false
 				}
 			},
+			editWorker: async (id, worker) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/worker/${id}`, {
+						method: "PUT",
+						headers: {
+							"Authorization": `Bearer ${getStore().token}`,
+						},
+						body: worker
+					});
+					if (response.ok) {
+						getActions().getWorkers();
+						return true;
+					} else {
+						console.log('error while updating worker');
+						return false
+					}
+				} catch (error) {
+					console.log(error);
+					return false
+				}
+			},
 			companyInfo: async (id) => {
 				try {
 					const response = await fetch(`${process.env.BACKEND_URL}/api/company/${id}`, {
@@ -462,6 +519,28 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error);
 				}
 			},
+			workerInfo: async (id) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/worker/${id}`, {
+						method: 'GET',
+						headers: {
+							"Authorization": `Bearer ${getStore().token}`,
+							"Content-Type": "application/json"
+						}
+					});
+					if (response.ok) {
+						const data = await response.json()
+						return data
+					} else {
+						const errorData = await response.json()
+						console.log("Error fetching issue:", errorData);
+						return response.status;
+					}
+				} catch (error) {
+					console.log(error);
+
+				}
+			},
 			deleteUser: async (id) => {
 				try {
 					const response = await fetch(`${process.env.BACKEND_URL}/api/user/${id}`, {
@@ -512,9 +591,140 @@ const getState = ({ getStore, getActions, setStore }) => {
 					console.log(error);
 					return false
 				}
-			}
-		}
+			},
+			deleteWorker: async (id) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/worker/${id}`, {
+						method: "DELETE"
+					});
+					if (response.ok) {
+						getActions().getWorkers();
+						return true;
+					} else {
+						console.log('error while deleting worker');
+						return false
+					}
+				} catch (error) {
+					console.log(error);
+					return false
+				}
+			},
+			createTask: async (task) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/task`, {
+						method: 'POST',
+						"headers": {
+							"Authorization": `Bearer ${getStore().token}`
+						},
+						body: task
+					})
 
+					return response.status
+				}
+				catch (error) {
+					console.log(error);
+					return { 'error': 'unexpected error' };
+				}
+			},
+			getTasks: async () => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/task`, {
+						method: "GET",
+					});
+					if (response.ok) {
+						const data = await response.json();
+						return data;
+					} else {
+						return response.status
+					}
+				} catch (error) {
+					console.log(error);
+
+				}
+			},
+			getInfoTask: async (id) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/task/${id}`, {
+						method: "GET",
+						headers: {
+							"Authorization": `Bearer ${getStore().token}`,
+							"Content-Type": "application/json"
+						}
+					});
+					if (response.ok) {
+						const data = await response.json();
+						return data
+					} else {
+						const errorData = await response.json();
+						console.log("Error fetching tasks", errorData);
+						return response.status
+					}
+				} catch (error) {
+					console.log(error);
+
+				}
+			},
+			deleteTask: async (id) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/task/${id}`, {
+						method: "DELETE"
+					});
+					if (response.ok) {
+						getActions().getTasks();
+						return true;
+					} else {
+						console.log('error while deleting task');
+						return false
+					}
+				} catch (error) {
+					console.log(error);
+					return false
+				}
+			},
+			editTask: async (id, task) => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/task/${id}`, {
+						method: "PUT",
+						headers: {
+							"Authorization": `Bearer ${getStore().token}`,
+						},
+						body: task
+					});
+					if (response.ok) {
+						getActions().getTasks();
+						return true
+					} else {
+						console.log('error while updating issue');
+						return false
+					}
+				} catch (error) {
+					console.log(error);
+					return false
+				}
+			},
+			getWorkerTasks: async () => {
+				try {
+					const response = await fetch(`${process.env.BACKEND_URL}/api/task/worker`, {
+						method: "GET",
+						headers: {
+							"Authorization": `Bearer ${getStore().token}`,
+							"Content-Type": "application/json"
+						}
+					});
+					if (response.ok) {
+						const data = await response.json();
+						return data
+					} else {
+						const errorData = await response.json();
+						console.log("Error fetching tasks", errorData);
+						return response.status
+					}
+				} catch (error) {
+					console.log(error);
+
+				}
+			},
+		}
 	}
 };
 

@@ -2,14 +2,13 @@ import React, { useContext, useState, useEffect } from "react";
 import { Context } from "../store/appContext.js";
 import { Navigate, useNavigate } from "react-router-dom";;
 import SuperVisorNavBar from "../component/supervisorNavBar.js";
-import CreateCompany from "../component/createCompany.jsx";
+import CreateTask from "../component/createTask.jsx";
 import defaultPick from "../../img/Imagen1user.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell, faUser, faRightFromBracket } from "@fortawesome/free-solid-svg-icons";
 import Swal from "sweetalert2";
 
-
-const SupervisorCreateCompany = () => {
+const SupervisorCreateTask = () => {
     const { store, actions } = useContext(Context);
     const [loading, setLoading] = useState(true);
     const [user, setUser] = useState(null);
@@ -173,11 +172,11 @@ const SupervisorCreateCompany = () => {
                         </nav>
                     </div>
                     <SuperVisorNavBar />
-                    <CreateCompany />
+                    <CreateTask />
                 </>
             )}
         </>
     );
 };
 
-export default SupervisorCreateCompany;
+export default SupervisorCreateTask;

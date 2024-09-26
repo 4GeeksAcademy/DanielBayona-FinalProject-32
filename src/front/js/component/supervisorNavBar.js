@@ -10,25 +10,18 @@ import {
     faUserGroup,
     faPen,
     faRightFromBracket,
+    faTasks,
 } from "@fortawesome/free-solid-svg-icons";
 import "../../styles/adminNavBar.css";
 
 export const SuperVisorNavBar = () => {
-    const navigate = useNavigate()
-    const { store, actions } = useContext(Context);
+
     const [activeItem, setActiveItem] = useState(0);
 
     const handleChangeColor = (index) => {
         setActiveItem(index);
     };
 
-    const handleLogout = () => {
-        const response = actions.logout();
-
-        if (response) {
-            navigate("/");
-        }
-    }
 
     return (
         <nav className="navbar nav-bar-left navbar-left d-flex flex-column navbar-expand-lg">
@@ -64,14 +57,18 @@ export const SuperVisorNavBar = () => {
                             className={`nav-item ${activeItem === 1 ? "active" : ""}`}
                             onClick={() => handleChangeColor(1)}
                         >
-                            <a
-                                className={`nav-link fst-italic fw-bolder ${activeItem === 1 ? "text-white" : "text-dark"
-                                    }`}
-                                aria-current="page"
-                                href="#"
+                            <NavLink
+                                end
+                                className={({ isActive }) =>
+                                    isActive
+                                        ? "nav-link active transition text-white fst-italic fw-bolder"
+                                        : "nav-link inactive transition text-dark fst-italic fw-bolder"
+                                }
+                                to="/supervisor/CreateTask"
                             >
-                                <FontAwesomeIcon icon={faList} className="pe-2" /> TASKS
-                            </a>
+                                <FontAwesomeIcon icon={faTasks} className="pe-2" />
+                                CREATE TASKS
+                            </NavLink>
                         </li>
                         <li
                             className={`nav-item ${activeItem === 2 ? "active" : ""}`}
@@ -107,17 +104,6 @@ export const SuperVisorNavBar = () => {
                                 <FontAwesomeIcon icon={faPen} className="pe-2" />
                                 CREATE COMPANY
                             </NavLink>
-                        </li>
-                        <li className="nav-item bottom-item">
-                            <a
-                                className="nav-link text-dark fst-italic fw-bolder"
-                                aria-current="page"
-                                onClick={() => handleLogout()}
-                                role="button"
-                            >
-                                <FontAwesomeIcon icon={faRightFromBracket} className="pe-2" />
-                                LOG OUT
-                            </a>
                         </li>
                     </ul>
                 </div>

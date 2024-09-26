@@ -6,6 +6,7 @@ from api.models import db, User, Issue, Supervisor, Worker, Company, Task
 from sqlalchemy import delete, update
 from api.utils import generate_sitemap, APIException
 from flask_cors import CORS
+from api.models import roleEnum 
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 from api.utils import set_password, check_password
 from base64 import b64encode
@@ -194,12 +195,53 @@ def login():
 # PROTECTED ROUTE PROFILE / RUTA PROTEGIDA PERFIL
 # Protect a route with jwt_required, which will kick out requests
 # without a valid JWT present.
+
 @api.route("/profile", methods=["GET"])
 @jwt_required()
 def get_profile():
-    # Access the identity of the current user with get_jwt_identity
-    current_user = get_jwt_identity()
-    return jsonify(logged_in_as=current_user), 200
+    current_user_id = get_jwt_identity()
+    user = User.query.get(current_user_id)
+    if not user:
+        return jsonify({"msg": "User not found"}), 404
+
+    user_data = {
+        "id": user.id,
+        "role": str(user.role.value),
+        "pic": user.pic or None,
+        "username": user.username
+    }
+    
+    if user.role == roleEnum.supervisor:
+        supervisor = Supervisor.query.filter_by(user_id = user.id).first()
+        if supervisor:
+            user_data.update({
+            "id": supervisor.id,
+            "name": supervisor.name,
+            "last_name": supervisor.last_name,
+            "username": supervisor.user.username,
+            "position": supervisor.position,
+            "mail" : supervisor.mail,
+            "adress" : supervisor.adress,
+            "phone" : supervisor.phone,
+            "identification" : supervisor.identification
+            })
+    elif user.role == roleEnum.worker:
+        worker = Worker.query.filter_by(user_id = user.id).first()
+        if worker:
+            user_data.update({
+            "id": worker.id,
+            "name": worker.name,
+            "last_name": worker.last_name,
+            "username": worker.user.username,
+            "position": worker.position,
+            "mail" : worker.mail,
+            "adress" : worker.adress,
+            "phone" : worker.phone,
+            "identification" : worker.identification
+            })
+        
+
+    return jsonify(user_data), 200
 
 # PROTECTED ROUTE VALID TOKEN / RUTA PROTEGIDA VALIDACION DE TOKEN
 @api.route("/valid-token", methods=["GET"])
@@ -512,10 +554,16 @@ def get_workers():
 
 @api.route('/worker/<int:id>', methods=["DELETE"])
 def delete_worker(id):
-    worker = Worker()
     try:
-        worker = worker.query.filter_by(id=id).first()
+        worker = Worker.query.filter_by(id=id).first()
+        
         if worker:
+            if worker.user_id:
+                user = User.query.get(worker.user_id)
+                if user:
+                    user.is_assigned = False
+                    db.session.add(user)
+            
             db.session.delete(worker)
             db.session.commit()
             return jsonify({'message': 'Worker has been deleted successfully'}), 200
@@ -523,7 +571,8 @@ def delete_worker(id):
             return jsonify({'message': 'Worker not found'}), 404
     except Exception as error:
         print(error.args)
-        return jsonify({'message': f'Error deleting Worker: {error}'}),400
+        return jsonify({'message': f'Error deleting Worker: {error}'}), 400
+
 
 @api.route('/worker/<int:id>', methods=["PUT"])
 def update_worker(id):
@@ -675,15 +724,15 @@ def update_company(id):
 @api.route("/task", methods=["GET"])
 def  get_tasks():
     tasks= Task()
-    tasks= tasks.query.all
+    tasks= tasks.query.all()
     all_tasks =  list(map(lambda x:x.serialize(), tasks))
     return jsonify(all_tasks)
 
-@api.route('/task/int<int:id>', methods=["GET"])
+@api.route('/task/<int:id>', methods=["GET"])
 def get_task(id):
     task= Task()
     try:
-        task= task.query.filter_by(id = id).first
+        task= task.query.filter_by(id = id).first()
         return (task.serialize())
     except Exception as error:
         return jsonify({"message": f"Error at finding task{error}"}), 400
@@ -696,16 +745,19 @@ def create_task():
 
     user_id = get_jwt_identity()
     supervisor_id= None
+    worker_id = None
     uploader_table= Worker.query.filter_by(user_id= user_id).one_or_none()
     if uploader_table is None:
         uploader_table = Supervisor.query.filter_by(user_id= user_id ).one_or_none()
-        supervisor_id = uploader_table
+        supervisor_id = uploader_table.id
     else: 
-        worker_id = uploader_table
+        worker_id = uploader_table.id
 
     name = form_data.get('name')
     desc = form_data.get('desc')
     work = data_files.get("work") 
+    company = form_data.get('company')
+    date = form_data.get('date')
 
     result_cloud = uploader.upload(work)
     work_url = result_cloud.get("secure_url")
@@ -717,22 +769,17 @@ def create_task():
     if task is not None:
         return jsonify({'Message': 'Task already exists'}), 400
 
-    task = task(
-        name = name,
-        desc = desc,
-        work = work_url,
-        work_id = work_id,
+    task = Task(
+        name=name,
+        desc=desc,
+        work=work_url,
+        work_id=work_id,
+        date=date,
+        company = company,
+        supervisor_id=supervisor_id if supervisor_id is not None else None,
+        worker_id=worker_id if worker_id is not None else None
     )
-    if supervisor_id is not None:
-        task = task(
-            supervisor_id = supervisor_id
-        )
-    else:
-        task = task(
-            worker_id = worker_id
-        )
-
-
+    
     try:
         db.session.add(task)
         db.session.commit()
@@ -754,6 +801,7 @@ def update_task(id):
     name = form_data.get('name')
     desc = form_data.get('desc')
     status = form_data.get('status')
+    date = form_data.get('date')
     work = data_files.get('work')
     worker_id = form_data.get('worker_id')
     supervisor_id = supervisor_table.id
@@ -764,6 +812,8 @@ def update_task(id):
         return jsonify({"Message": "Task doesn't exist"}), 404
 
     task.supervisor_id = supervisor_id
+    if date is not None: 
+        task.date = date
     if name is not None:
         task.name = name
     if desc is not None:
@@ -790,10 +840,28 @@ def update_task(id):
 def delete_task(id):
     task = Task()
     try:
-        task = delete(task).where(id = id)
-        db.session.commit()
-        return jsonify({"message": "Task has been deleted successfully"}, 201)
+        task = task.query.filter_by(id = id).first()
+        if task:
+            db.session.delete(task)
+            db.session.commit()
+            return jsonify({"message": "Task has been deleted successfully"}), 200
+        else:
+                return jsonify({'message': 'Task not found'}), 404
     except Exception as error:
         print(error.args)
         db.session.rollback()
         return jsonify({"message": f"Error at deleting task {error}"}), 400
+
+@api.route('/task/worker', methods=["GET"])
+@jwt_required()
+def get_worker_task():
+    try:
+        worker = Worker.query.filter_by(user_id = get_jwt_identity()).first()
+        tasks= Task.query.filter_by(worker_id = worker.id).all()
+        all_tasks =  list(map(lambda x:x.serialize(), tasks))
+        return jsonify(all_tasks)
+    except Exception as error:
+        return jsonify({"message": f"Error at finding task{error}"}), 400
+    
+    
+    
